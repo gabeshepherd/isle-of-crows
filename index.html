@@ -83,11 +83,11 @@
 
   <sc-if value="{{ showMain }}" hint-placeholder-val="{{ false }}">
     <div style="position:relative;width:100%;">
-      <nav style="position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(12,7,6,0.4);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid rgba(255,255,255,0.06);">
-        <div style="font-family:'Tisk','Pirata One',serif;font-size:44px;color:#eadfd6;letter-spacing:0.02em;">Isle of Crows</div>
-        <div style="display:flex;gap:38px;">
+      <nav style="position:fixed;top:0;left:0;right:0;z-index:500;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 24px;padding:14px clamp(16px,4vw,48px);background:rgba(12,7,6,0.4);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="font-family:'Tisk','Pirata One',serif;font-size:clamp(22px,5vw,44px);color:#eadfd6;letter-spacing:0.02em;flex:1 1 auto;">Isle of Crows</div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(12px,2.5vw,38px);">
           <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="5">
-            <a href="{{ item.href }}" style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(230,220,212,0.75);text-decoration:none;transition:color 0.3s ease;" style-hover="color:#c9433f;">{{ item.label }}</a>
+            <a href="{{ item.href }}" style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(230,220,212,0.75);text-decoration:none;transition:color 0.3s ease;white-space:nowrap;" style-hover="color:#c9433f;">{{ item.label }}</a>
           </sc-for>
         </div>
       </nav>
@@ -115,12 +115,12 @@
         <div style="position:relative;display:flex;gap:28px;flex-wrap:wrap;justify-content:center;">
           <sc-for list="{{ characters }}" as="c" hint-placeholder-count="4">
             <div style="width:210px;display:flex;flex-direction:column;align-items:center;gap:8px;">
-              <div onClick="{{ openCharacterModal }}" style="position:relative;width:180px;height:230px;cursor:pointer;">
+              <a href="{{ c.pageHref }}" style="position:relative;width:180px;height:230px;cursor:pointer;display:block;text-decoration:none;">
                 <div style="{{ c.frameStyle }}" style-hover="filter:none;">portrait pending</div>
                 <sc-if value="{{ c.videoRefSetter }}" hint-placeholder-val="{{ false }}">
                   <video ref="{{ c.videoRefSetter }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" onMouseEnter="{{ c.playVideo }}" onMouseLeave="{{ c.pauseVideo }}" style="{{ c.videoStyle }}" style-hover="opacity:1;"></video>
                 </sc-if>
-              </div>
+              </a>
               <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:0.06em;color:#eadfd6;">{{ c.name }}</div>
             </div>
           </sc-for>
@@ -248,7 +248,7 @@
 
   <sc-if value="{{ characterModalOpen }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ closeCharacterModal }}" style="position:fixed;inset:0;z-index:10000;background:rgba(5,2,2,0.85);display:flex;align-items:center;justify-content:center;padding:24px;">
-      <div onClick="{{ stopPropagation }}" style="position:relative;background:#120a08;border:1px solid rgba(201,67,63,0.5);padding:44px 48px;max-width:420px;text-align:center;box-shadow:0 0 50px rgba(0,0,0,0.6);">
+      <div onClick="{{ stopPropagation }}" style="position:relative;background:#120a08;border:1px solid rgba(201,67,63,0.5);padding:clamp(28px,6vw,44px) clamp(20px,6vw,48px);width:min(420px,90vw);text-align:center;box-shadow:0 0 50px rgba(0,0,0,0.6);">
         <div style="font-family:'Tisk','Pirata One',serif;font-size:28px;color:#eadfd6;margin-bottom:16px;">Sealed</div>
         <div style="font-family:'EB Garamond',serif;font-size:17px;font-style:italic;color:rgba(230,220,212,0.7);line-height:1.6;">Character Sheet and Gallery coming soon!</div>
         <button onClick="{{ closeCharacterModal }}" style="margin-top:28px;padding:12px 32px;background:transparent;border:1px solid rgba(201,67,63,0.6);color:#eadfd6;font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;" style-hover="background:rgba(120,14,16,0.25);">Close</button>
@@ -267,6 +267,13 @@ class Component extends DCLogic {
   titanVideoRef = React.createRef();
 
   componentDidMount() {
+    if (window.location.hash) {
+      this.setState({ stage: 'site' });
+      setTimeout(() => {
+        const el = document.querySelector(window.location.hash);
+        if (el) el.scrollIntoView();
+      }, 60);
+    }
     if (this.rulebookVideoRef.current) {
       this.rulebookVideoRef.current.muted = true;
       this.rulebookVideoRef.current.defaultMuted = true;
@@ -453,10 +460,10 @@ class Component extends DCLogic {
       closeRulebookModal: () => this.setState({ rulebookModalOpen: false }),
       openCurrentSeason: () => this.setState({ lightboxSrc: 'uploads/POSTER SEASON 3-fb716ad3.png' }),
       characters: [
-        { name: 'Adhara', frameStyle: this.portraitFrame(false, 'uploads/create-a-vertical-3-4-half-body-portrait-of-adhara.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight-.mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
-        { name: 'Aziza', frameStyle: this.portraitFrame(false, 'uploads/create-a-vertical-3-4-half-body-portrait-of-aziza-.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight- (3).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
-        { name: 'Oramond', frameStyle: this.portraitFrame(false, 'uploads/create-a-vertical-3-4-half-body-portrait-of-oramon.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight- (1).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
-        { name: 'Serafini', frameStyle: this.portraitFrame(false, 'uploads/flip-the-image-horizontally-.png'), videoStyle: this.videoOverlayStyle(true), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight- (2).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
+        { name: 'Adhara', pageHref: 'Adhara.dc.html', frameStyle: this.portraitFrame(false, 'uploads/create-a-vertical-3-4-half-body-portrait-of-adhara.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight-.mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
+        { name: 'Aziza', pageHref: 'Aziza.dc.html', frameStyle: this.portraitFrame(false, 'uploads/create-a-vertical-3-4-half-body-portrait-of-aziza-.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight- (3).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
+        { name: 'Oramond', pageHref: 'Oramond.dc.html', frameStyle: this.portraitFrame(false, 'uploads/create-a-vertical-3-4-half-body-portrait-of-oramon.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight- (1).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
+        { name: 'Serafini', pageHref: 'Serafini.dc.html', frameStyle: this.portraitFrame(false, 'uploads/flip-the-image-horizontally-.png'), videoStyle: this.videoOverlayStyle(true), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight- (2).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
       ],
       fallenCharacters: [
         { name: 'Babette', deceased: true, frameStyle: this.portraitFrame(true) },
