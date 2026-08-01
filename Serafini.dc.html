@@ -67,9 +67,23 @@
     <div style="font-family:'Tisk','Pirata One',serif;font-size:clamp(38px,5vw,58px);color:#eadfd6;margin-top:-6px;">Moments Captured</div>
     <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;max-width:900px;margin-top:16px;">
       <sc-for list="{{ galleryPlaceholders }}" as="g" hint-placeholder-count="6">
-        <div style="width:260px;height:150px;background:repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 8px, transparent 8px, transparent 16px), #120908;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:10px;letter-spacing:0.05em;color:rgba(230,220,212,0.3);text-transform:uppercase;">photo pending</div>
+        <sc-if value="{{ g.src }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ g.openLightbox }}" style="width:260px;height:150px;background-image:url('{{ g.src }}');background-size:cover;background-position:center;border:1px solid rgba(201,67,63,0.4);cursor:zoom-in;filter:grayscale(1);transition:filter 0.4s ease;" style-hover="filter:grayscale(0);"></div>
+        </sc-if>
+        <sc-if value="{{ g.empty }}" hint-placeholder-val="{{ true }}">
+          <div style="width:260px;height:150px;background:repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 8px, transparent 8px, transparent 16px), #120908;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:10px;letter-spacing:0.05em;color:rgba(230,220,212,0.3);text-transform:uppercase;">photo pending</div>
+        </sc-if>
       </sc-for>
     </div>
+
+    <sc-if value="{{ galleryLightboxOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeGalleryLightbox }}" style="position:fixed;inset:0;z-index:10000;background:rgba(5,2,2,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:zoom-out;padding:40px;gap:16px;">
+        <div role="img" style="{{ galleryLightboxStyle }}"></div>
+        <sc-if value="{{ galleryLightboxCaption }}" hint-placeholder-val="{{ false }}">
+          <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:0.15em;color:rgba(230,220,212,0.75);text-transform:uppercase;">{{ galleryLightboxCaption }}</div>
+        </sc-if>
+      </div>
+    </sc-if>
   </section>
 
   <div style="display:flex;align-items:center;justify-content:space-between;padding:20px clamp(20px,5vw,56px);border-top:1px solid rgba(255,255,255,0.06);">
@@ -93,15 +107,33 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { sheetModalOpen: false };
+  state = { sheetModalOpen: false, galleryLightboxSrc: null, galleryLightboxCaption: null };
 
   renderVals() {
+    const photos = [
+      { src: 'uploads/serafini-portal-motion-blur.png', caption: 'Dia 1 - Indo Para Arbormark' },
+      null, null, null, null, null,
+    ];
+    const galleryPlaceholders = photos.map((p, i) => {
+      const src = p && typeof p === 'object' ? p.src : p;
+      const caption = p && typeof p === 'object' ? p.caption : null;
+      return { id: i, src, empty: !src, openLightbox: src ? () => this.setState({ galleryLightboxSrc: src, galleryLightboxCaption: caption }) : null };
+    });
     return {
       sheetModalOpen: this.state.sheetModalOpen,
       openSheetModal: () => this.setState({ sheetModalOpen: true }),
       closeSheetModal: () => this.setState({ sheetModalOpen: false }),
       stopPropagation: (e) => e.stopPropagation(),
-      galleryPlaceholders: [{id:1},{id:2},{id:3},{id:4},{id:5},{id:6}],
+      galleryPlaceholders,
+      galleryLightboxOpen: !!this.state.galleryLightboxSrc,
+      galleryLightboxCaption: this.state.galleryLightboxCaption,
+      galleryLightboxStyle: {
+        width: '90vw', height: '90vh', maxWidth: 900,
+        backgroundImage: this.state.galleryLightboxSrc ? `url("${this.state.galleryLightboxSrc}")` : 'none',
+        backgroundSize: 'contain', backgroundRepeat: 'no-repeat', backgroundPosition: 'center',
+        boxShadow: '0 0 60px rgba(0,0,0,0.7)',
+      },
+      closeGalleryLightbox: () => this.setState({ galleryLightboxSrc: null, galleryLightboxCaption: null }),
     };
   }
 }
