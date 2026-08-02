@@ -40,9 +40,9 @@
       <div style="font-family:'Tisk','Pirata One',serif;font-size:clamp(64px,10vw,140px);line-height:0.9;color:#eadfd6;margin-top:-6px;">Aziza</div>
       <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:0.22em;color:rgba(230,220,212,0.6);text-transform:uppercase;margin-top:4px;">Shurima &middot; Combatente</div>
 
-      <div style="font-family:'EB Garamond',serif;font-size:19px;font-style:italic;color:rgba(230,220,212,0.75);border-left:2px solid rgba(201,67,63,0.5);padding-left:16px;margin-top:14px;max-width:520px;">Seu quote entrará aqui também! Não esqueça de mandar!</div>
+      <div style="font-family:'EB Garamond',serif;font-size:19px;font-style:italic;color:rgba(230,220,212,0.75);border-left:2px solid rgba(201,67,63,0.5);padding-left:16px;margin-top:14px;max-width:520px;">"Tenho medo, mas não me falta coragem."</div>
 
-      <div style="font-family:'EB Garamond',serif;font-size:16px;line-height:1.8;color:rgba(230,220,212,0.55);max-width:560px;margin-top:10px;">
+      <div style="font-family:'EB Garamond',serif;font-size:16px;line-height:1.8;color:rgba(230,220,212,0.55);max-width:560px;margin-top:10px;max-height:5.4em;overflow-y:auto;padding-right:8px;">
         Aziza é a filha única de dois guerreiros da guarda de ouro de Shurima. Sua linhagem é ancestral, mas ela nunca teve conhecimento disso. Seus pais morreram quando ela tinha 8 anos, devido a um ataque da ilha das sombras em sua antiga aldeia. Isso fez com que ela e mais um grupo de crianças e adultos migrassem para uma outra aldeia próxima. Aziza é alta, forte, mas não aparenta hostilidade com sua força. Seu corpo reflete imponência, mas seu rosto mostra bondade e ternura. Ela sempre foi a protetora da sua nova aldeia, sendo conhecida, respeitada e amada por todos. Aziza sempre esteve e se manteve em paz, mesmo com a perda dos seus pais, nunca buscou vingança ou retaliação.
       </div>
 
@@ -117,7 +117,8 @@ class Component extends DCLogic {
   renderVals() {
     const photos = [
       { src: 'uploads/aziza-carriage-motion-blur.png', caption: 'Dia 1 - Indo Para Arbormark' },
-      null, null, null, null, null,
+      { src: 'uploads/aziza-forest-focus-blur.png', caption: 'E a maldição começa!' },
+      null, null, null,
     ];
     const galleryPlaceholders = photos.map((p, i) => {
       const src = p && typeof p === 'object' ? p.src : p;
