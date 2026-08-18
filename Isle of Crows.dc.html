@@ -15,6 +15,8 @@
     @font-face{font-family:'Tisk';src:url('uploads/Tisk.ttf') format('truetype');font-display:swap;}
     body{margin:0;background:#0a0605;scroll-behavior:smooth;}
     @keyframes slowZoom{0%{transform:scale(1)}100%{transform:scale(1.16)}}
+    @keyframes ascendedGlow{0%,100%{box-shadow:0 0 14px rgba(186,146,72,0.22), inset 0 0 10px rgba(186,146,72,0.1);text-shadow:0 0 7px rgba(186,146,72,0.5)}50%{box-shadow:0 0 30px rgba(210,168,88,0.55), inset 0 0 18px rgba(210,168,88,0.22);text-shadow:0 0 16px rgba(214,178,104,0.95)}}
+    @keyframes claimedGlow{0%,100%{box-shadow:0 0 16px rgba(74,140,120,0.18), inset 0 0 10px rgba(74,140,120,0.08);text-shadow:0 0 9px rgba(90,170,146,0.5)}50%{box-shadow:0 0 34px rgba(96,190,160,0.5), inset 0 0 20px rgba(96,190,160,0.2);text-shadow:0 0 18px rgba(140,220,190,0.9)}}
     @keyframes fogDrift1{0%{transform:translate(-8%,0) scale(1)}50%{transform:translate(6%,-4%) scale(1.08)}100%{transform:translate(-8%,0) scale(1)}}
     @keyframes fogDrift2{0%{transform:translate(10%,4%) scale(1.05)}50%{transform:translate(-8%,-2%) scale(1)}100%{transform:translate(10%,4%) scale(1.05)}}
     @keyframes fogDrift3{0%{transform:translate(-20%,10%) scale(1.1)}50%{transform:translate(15%,-6%) scale(1.2)}100%{transform:translate(-20%,10%) scale(1.1)}}
@@ -93,13 +95,13 @@
       </nav>
 
       <section id="home" style="position:relative;min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:140px 24px 80px;overflow:hidden;background:#0a0605;">
-        <video ref="{{ titanVideoRef }}" src="uploads/make-the-field-force-pulsing-and-the-city-around-i.mp4" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
+        <video ref="{{ titanVideoSetup }}" src="uploads/THIS IS IT.mp4" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
         <div style="position:absolute;left:-20%;top:-15%;width:100%;height:80%;background:radial-gradient(ellipse, rgba(20,8,8,0.9) 0%, transparent 70%);filter:blur(46px);animation:fogDrift3 40s ease-in-out infinite;"></div>
         <div style="position:absolute;right:-20%;bottom:-15%;width:100%;height:85%;background:radial-gradient(ellipse, rgba(30,10,10,0.85) 0%, transparent 70%);filter:blur(52px);animation:fogDrift4 48s ease-in-out infinite;"></div>
         <div style="position:absolute;inset:-10%;background:linear-gradient(90deg, transparent, rgba(15,6,6,0.6), transparent);filter:blur(40px);animation:fogDriftSlow 60s ease-in-out infinite;"></div>
-        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%, rgba(6,3,3,0.35) 0%, rgba(6,3,3,0.75) 65%, rgba(6,3,3,0.92) 100%);"></div>
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%, rgba(6,3,3,0.2) 0%, rgba(6,3,3,0.55) 65%, rgba(6,3,3,0.78) 100%);"></div>
         <div style="position:relative;z-index:2;font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.4em;color:#c9433f;text-transform:uppercase;">Season Three</div>
-        <div style="position:relative;z-index:2;font-family:'Tisk','Pirata One',serif;font-size:clamp(84px,13.5vw,162px);color:#eadfd6;margin-top:clamp(-14px,-1.5vw,-4px);">The Titans Await</div>
+        <div style="position:relative;z-index:2;font-family:'Tisk','Pirata One',serif;font-size:clamp(84px,13.5vw,162px);color:#eadfd6;margin-top:clamp(-14px,-1.5vw,-4px);">Wasteland</div>
         <div style="position:relative;z-index:2;max-width:560px;font-family:'EB Garamond',serif;font-size:18px;line-height:1.7;color:rgba(230,220,212,0.65);font-style:italic;margin-top:clamp(-60px,-6vw,-24px);">The chronicle continues. Choose your path below.</div>
         <a href="#personagens" style="position:relative;z-index:2;margin-top:24px;padding:14px 40px;border:1px solid rgba(201,67,63,0.6);color:#eadfd6;font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.24em;text-transform:uppercase;text-decoration:none;transition:box-shadow 0.4s ease, background 0.4s ease;" style-hover="background:rgba(120,14,16,0.25);box-shadow:0 0 24px rgba(201,67,63,0.6);">Meet the Bound</a>
       </section>
@@ -121,7 +123,21 @@
                   <video ref="{{ c.videoRefSetter }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" onMouseEnter="{{ c.playVideo }}" onMouseLeave="{{ c.pauseVideo }}" style="{{ c.videoStyle }}" style-hover="opacity:1;"></video>
                 </sc-if>
               </a>
-              <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:0.06em;color:#eadfd6;">{{ c.name }}</div>
+              <sc-if value="{{ c.struckName }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:baseline;gap:8px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:0.06em;color:#eadfd6;">
+                  <span style="text-decoration:line-through;text-decoration-color:rgba(201,67,63,0.85);text-decoration-thickness:1.5px;color:rgba(230,220,212,0.4);">{{ c.struckName }}</span>
+                  <span>{{ c.displayName }}</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ c.plainName }}" hint-placeholder-val="{{ true }}">
+                <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:0.06em;color:#eadfd6;">{{ c.name }}</div>
+              </sc-if>
+              <sc-if value="{{ c.ascended }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:2px;padding:4px 11px 3px;border-top:1px solid rgba(186,146,72,0.55);border-bottom:1px solid rgba(186,146,72,0.55);border-left:1px solid rgba(186,146,72,0.22);border-right:1px solid rgba(186,146,72,0.22);background:linear-gradient(180deg, rgba(88,64,22,0.28), rgba(38,26,10,0.42));font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:0.36em;color:rgba(224,190,118,0.95);text-transform:uppercase;animation:ascendedGlow 3.6s ease-in-out infinite;">Ascended</div>
+              </sc-if>
+              <sc-if value="{{ c.claimed }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:2px;padding:4px 11px 3px;border:1px solid rgba(74,116,104,0.34);background:linear-gradient(180deg, rgba(18,42,38,0.45), rgba(8,20,18,0.3));font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:0.36em;color:rgba(158,200,182,0.85);text-transform:uppercase;filter:blur(0.15px);animation:claimedGlow 4.4s ease-in-out infinite;">Claimed</div>
+              </sc-if>
             </div>
           </sc-for>
         </div>
@@ -150,7 +166,7 @@
       </section>
 
       <section id="rpg-pdf" style="position:relative;min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:80px 24px;overflow:hidden;border-top:1px solid rgba(255,255,255,0.05);background:#0a0605;">
-        <video ref="{{ rulebookVideoRef }}" src="uploads/YTDown.com_YouTube_LB-Rework_Media_3iZ4XolY2ig_001_1080p (1).mp4" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.65;"></video>
+        <video ref="{{ rulebookVideoSetup }}" src="uploads/YTDown.com_YouTube_LB-Rework_Media_3iZ4XolY2ig_001_1080p (1).mp4" autoPlay="{{ true }}" loop="{{ true }}" muted="{{ true }}" playsInline="{{ true }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.65;"></video>
         <div style="position:absolute;left:-15%;top:-10%;width:90%;height:70%;background:radial-gradient(ellipse, rgba(20,8,8,0.85) 0%, transparent 70%);filter:blur(44px);animation:fogDrift1 32s ease-in-out infinite;"></div>
         <div style="position:absolute;right:-20%;bottom:-10%;width:95%;height:75%;background:radial-gradient(ellipse, rgba(30,10,10,0.8) 0%, transparent 70%);filter:blur(50px);animation:fogDrift2 38s ease-in-out infinite;"></div>
         <div style="position:absolute;inset:-10%;background:linear-gradient(90deg, transparent, rgba(15,6,6,0.55), transparent);filter:blur(42px);animation:fogDriftSlow 50s ease-in-out infinite;"></div>
@@ -211,6 +227,25 @@
         </div>
       </section>
 
+      <section id="season-gallery" style="position:relative;min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:80px 24px 120px;overflow:hidden;">
+        <div style="position:absolute;inset:0;z-index:0;background-image:url('uploads/pasted-1787002497023-0.png');background-size:cover;background-position:center;"></div>
+        <div style="position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse at 50% 50%, rgba(6,3,3,0.55) 0%, rgba(6,3,3,0.8) 65%, rgba(6,3,3,0.94) 100%);"></div>
+        <div style="position:relative;z-index:2;font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.35em;color:rgba(230,220,212,0.5);text-transform:uppercase;">Season III Gallery</div>
+        <div style="position:relative;z-index:2;font-family:'Tisk','Pirata One',serif;font-size:clamp(69px,10.5vw,114px);color:#eadfd6;margin-top:clamp(-10px,-1vw,-3px);">Remember Moments</div>
+        <div style="position:relative;z-index:2;max-width:520px;font-family:'EB Garamond',serif;font-size:16px;line-height:1.8;color:rgba(230,220,212,0.5);font-style:italic;margin-top:clamp(-18px,-1.8vw,-6px);">What the crows saw, and what we managed to keep.</div>
+
+        <div style="position:relative;z-index:2;display:flex;gap:20px;flex-wrap:wrap;justify-content:center;max-width:900px;margin-top:32px;">
+          <sc-for list="{{ seasonGalleryPlaceholders }}" as="p" hint-placeholder-count="4">
+            <sc-if value="{{ p.src }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ p.openZoom }}" style="width:260px;height:150px;background-image:url('{{ p.src }}');background-size:cover;background-position:center;border:1px solid rgba(201,67,63,0.4);cursor:zoom-in;filter:grayscale(1) brightness(0.65);transition:filter 0.4s ease;" style-hover="filter:grayscale(0) brightness(1);"></div>
+            </sc-if>
+            <sc-if value="{{ p.empty }}" hint-placeholder-val="{{ true }}">
+              <div style="width:260px;height:150px;background:repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 8px, transparent 8px, transparent 16px), rgba(18,9,8,0.85);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:10px;letter-spacing:0.05em;color:rgba(230,220,212,0.3);text-transform:uppercase;">photo pending</div>
+            </sc-if>
+          </sc-for>
+        </div>
+      </section>
+
       <footer style="padding:28px 24px 36px;text-align:center;border-top:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;align-items:center;gap:16px;">
         <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;color:rgba(230,220,212,0.3);text-transform:uppercase;">GM KB Studios · Isle of Crows: The Reckoning · Season Three</div>
         <div style="max-width:720px;font-family:'EB Garamond',serif;font-size:12px;line-height:1.7;color:rgba(230,220,212,0.28);">Isle of Crows is an original story created by Gabe Shepherd (KB), set within the League of Legends universe, whose intellectual property belongs to Riot Games. This project is a non-commercial fan work created solely for entertainment purposes as part of an original Dungeons &amp; Dragons 5th Edition Runarcana campaign among friends.<br/><br/>Original characters, artwork, writing, and campaign content created specifically for Isle of Crows remain the intellectual property of their respective creators. Adhara, Aziza, Oramond, and Serafini are original characters owned by their respective creators. Unauthorized reproduction, distribution, or commercial use of this original content is prohibited and may result in legal action.</div>
@@ -229,8 +264,11 @@
   </div>
 
   <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
-    <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;z-index:10000;background:rgba(5,2,2,0.92);display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:40px;">
+    <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;z-index:10000;background:rgba(5,2,2,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:zoom-out;padding:40px;gap:16px;">
       <div role="img" style="{{ lightboxBgStyle }}"></div>
+      <sc-if value="{{ lightboxCaption }}" hint-placeholder-val="{{ false }}">
+        <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:0.15em;color:rgba(230,220,212,0.75);text-transform:uppercase;">{{ lightboxCaption }}</div>
+      </sc-if>
     </div>
   </sc-if>
 
@@ -274,16 +312,7 @@ class Component extends DCLogic {
         if (el) el.scrollIntoView();
       }, 60);
     }
-    if (this.rulebookVideoRef.current) {
-      this.rulebookVideoRef.current.muted = true;
-      this.rulebookVideoRef.current.defaultMuted = true;
-      this.rulebookVideoRef.current.play?.().catch(() => {});
-    }
-    if (this.titanVideoRef.current) {
-      this.titanVideoRef.current.muted = true;
-      this.titanVideoRef.current.defaultMuted = true;
-      this.titanVideoRef.current.play?.().catch(() => {});
-    }
+
     const count = this.props.particleCount ?? 22;
     const fog = this.props.fogIntensity ?? 0.7;
     const particles = Array.from({ length: count }).map((_, i) => {
@@ -313,10 +342,15 @@ class Component extends DCLogic {
     this.setState({ particles, fogIntensity: fog });
   }
 
+  decorateNames(list) {
+    return list.map(c => ({ ...c, plainName: !c.struckName }));
+  }
+
   videoRefSetter(src) {
     return (el) => {
-      if (el && el.src !== src && !el.getAttribute('src')) {
-        el.src = src;
+      if (el && el.getAttribute('src') !== src) {
+        el.setAttribute('src', src);
+        el.load();
       }
     };
   }
@@ -408,8 +442,26 @@ class Component extends DCLogic {
     return {
       showHero: this.state.stage !== 'site',
       showMain: this.state.stage === 'site',
-      rulebookVideoRef: this.rulebookVideoRef,
-      titanVideoRef: this.titanVideoRef,
+
+      titanVideoSetup: (el) => {
+        if (!el || el.__trimWired) return;
+        el.__trimWired = true;
+        el.muted = true;
+        el.defaultMuted = true;
+        el.volume = 0;
+        el.addEventListener('timeupdate', () => {
+          if (el.duration && el.currentTime >= el.duration - 0.1) el.currentTime = 0;
+        });
+        el.play?.().catch(() => {});
+      },
+      rulebookVideoSetup: (el) => {
+        if (!el || el.__wired) return;
+        el.__wired = true;
+        el.muted = true;
+        el.defaultMuted = true;
+        el.volume = 0;
+        el.play?.().catch(() => {});
+      },
       showFallen: false,
       transitioning: this.state.transitioning,
       particles: this.state.particles,
@@ -440,6 +492,7 @@ class Component extends DCLogic {
         { label: 'Season Two', bgStyle: this.posterBgStyle('uploads/Screenshot 2026-07-31 at 18.35.11.png'), openZoom: () => this.setState({ lightboxSrc: 'uploads/Screenshot 2026-07-31 at 18.35.11.png' }) },
       ],
       lightboxOpen: !!this.state.lightboxSrc,
+      lightboxCaption: this.state.lightboxCaption,
       lightboxBgStyle: {
         width: '90vw',
         height: '90vh',
@@ -450,21 +503,32 @@ class Component extends DCLogic {
         backgroundPosition: 'center',
         boxShadow: '0 0 60px rgba(0,0,0,0.7)',
       },
-      closeLightbox: () => this.setState({ lightboxSrc: null }),
+      closeLightbox: () => this.setState({ lightboxSrc: null, lightboxCaption: null }),
       characterModalOpen: this.state.characterModalOpen,
       openCharacterModal: () => this.setState({ characterModalOpen: true }),
       closeCharacterModal: () => this.setState({ characterModalOpen: false }),
       stopPropagation: (e) => e.stopPropagation(),
+      seasonGalleryPlaceholders: [
+        null,
+        null,
+        { src: 'uploads/it-s-great--now--add-a-blue-ish-magic-dome-that-s--0be8d826.png', caption: '"The Titans Await" Chapter' },
+        null,
+      ].map((p, i) => ({
+        id: i,
+        src: p ? p.src : null,
+        empty: !p,
+        openZoom: p ? () => this.setState({ lightboxSrc: p.src, lightboxCaption: p.caption }) : null,
+      })),
       rulebookModalOpen: this.state.rulebookModalOpen,
       openRulebookModal: () => this.setState({ rulebookModalOpen: true }),
       closeRulebookModal: () => this.setState({ rulebookModalOpen: false }),
       openCurrentSeason: () => this.setState({ lightboxSrc: 'uploads/POSTER SEASON 3-fb716ad3.png' }),
-      characters: [
-        { name: 'Adhara', pageHref: 'Adhara.dc.html', frameStyle: this.portraitFrame(false, 'uploads/create-a-vertical-3-4-half-body-portrait-of-adhara.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight-.mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
-        { name: 'Aziza', pageHref: 'Aziza.dc.html', frameStyle: this.portraitFrame(false, 'uploads/create-a-vertical-3-4-half-body-portrait-of-aziza-.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight- (3).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
-        { name: 'Oramond', pageHref: 'Oramond.dc.html', frameStyle: this.portraitFrame(false, 'uploads/create-a-vertical-3-4-half-body-portrait-of-oramon.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight- (1).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
-        { name: 'Serafini', pageHref: 'Serafini.dc.html', frameStyle: this.portraitFrame(false, 'uploads/flip-the-image-horizontally-.png'), videoStyle: this.videoOverlayStyle(true), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-into-a-short-video-with-slight- (2).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
-      ],
+      characters: this.decorateNames([
+        { name: 'Adhara', pageHref: 'Adhara.dc.html', frameStyle: this.portraitFrame(false, 'uploads/zoom-out-the-image-a-little-bit-so-it-should-up-to.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-with-only-her-hair-moving-a-lit.mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
+        { name: 'The Emperor', ascended: true, pageHref: 'Aziza.dc.html', frameStyle: this.portraitFrame(false, 'uploads/replace-the-heart-on-the-center-with-the-solar-dis (1).png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-but-only-making-the-disc-floati.mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
+        { name: 'Oramond', pageHref: 'Oramond.dc.html', frameStyle: this.portraitFrame(false, 'uploads/make-her-missing-the-top-of-her-fingers-from-the-l.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-with-only-her-hair-moving-a-lit (1).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
+        { name: 'Serafini', claimed: true, pageHref: 'Serafini.dc.html', frameStyle: this.portraitFrame(false, 'uploads/using-the-attached-serafini-image-as-the-character (1).png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animated-only-the-green-fog-and-maybe-close-the-ch (1).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
+      ]),
       fallenCharacters: [
         { name: 'Babette', deceased: true, frameStyle: this.portraitFrame(true) },
         { name: 'Aelena', deceased: true, frameStyle: this.portraitFrame(true) },

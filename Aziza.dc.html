@@ -18,6 +18,18 @@
     a:hover{color:#e05a55;}
 
 
+    @keyframes strikeDraw{0%{width:0}100%{width:100%}}
+    @keyframes titleReveal{0%{opacity:0;transform:translateY(6px);filter:blur(4px)}100%{opacity:1;transform:translateY(0);filter:blur(0)}}
+    @keyframes azizaGlitch{
+      0%{opacity:0;transform:scale(1.1) translateX(0);filter:none}
+      8%{opacity:1;transform:scale(1.1) translateX(-9px);filter:hue-rotate(40deg) contrast(1.5)}
+      14%{opacity:0.15;transform:scale(1.1) translateX(7px)}
+      22%{opacity:1;transform:scale(1.1) translateX(-4px);filter:saturate(2.2)}
+      30%{opacity:0.35;transform:scale(1.1) translateX(6px)}
+      40%{opacity:1;transform:scale(1.1) translateX(-2px);filter:none}
+      48%{opacity:0.6;transform:scale(1.1) translateX(3px)}
+      100%{opacity:1;transform:scale(1.1) translateX(0);filter:none}
+    }
   </style>
 </helmet>
 
@@ -37,8 +49,19 @@
   <section style="position:relative;min-height:100vh;display:flex;flex-wrap:wrap;align-items:stretch;">
     <div style="position:relative;flex:1 1 420px;min-height:60vh;display:flex;flex-direction:column;justify-content:center;padding:160px clamp(24px,6vw,72px) 80px;gap:18px;background:radial-gradient(ellipse at 30% 30%, rgba(190,150,50,0.22) 0%, transparent 60%), #0a0605;">
       <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.4em;color:#c9433f;text-transform:uppercase;">Season Three &middot; The Bound</div>
-      <div style="font-family:'Tisk','Pirata One',serif;font-size:clamp(64px,10vw,140px);line-height:0.9;color:#eadfd6;margin-top:-6px;">Aziza</div>
-      <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:0.22em;color:rgba(230,220,212,0.6);text-transform:uppercase;margin-top:4px;">Shurima &middot; Combatente</div>
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:clamp(12px,2vw,28px);font-family:'Tisk','Pirata One',serif;font-size:clamp(64px,10vw,140px);line-height:0.9;color:#eadfd6;margin-top:-6px;">
+        <span style="position:relative;display:inline-block;transition:color 0.8s ease;color:{{ nameColor }};">Aziza<sc-if value="{{ cursed }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:0;top:52%;height:3px;background:rgba(212,175,90,0.9);box-shadow:0 0 10px rgba(212,175,90,0.6);width:0;animation:strikeDraw 0.7s ease-out 0.25s forwards;"></span></sc-if></span>
+        <sc-if value="{{ cursed }}" hint-placeholder-val="{{ false }}">
+          <span style="color:#e8d9a8;opacity:0;animation:titleReveal 1s ease-out 0.85s forwards;">The Emperor</span>
+        </sc-if>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;font-family:'Cinzel',serif;font-size:14px;letter-spacing:0.22em;color:rgba(230,220,212,0.6);text-transform:uppercase;margin-top:4px;">
+        <span>Shurima &middot;</span>
+        <span style="position:relative;display:inline-block;transition:color 0.8s ease;color:{{ roleColor }};">Combatente<sc-if value="{{ cursed }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:0;top:50%;height:1.5px;background:rgba(212,175,90,0.85);width:0;animation:strikeDraw 0.7s ease-out 0.25s forwards;"></span></sc-if></span>
+        <sc-if value="{{ cursed }}" hint-placeholder-val="{{ false }}">
+          <span style="color:rgba(224,190,118,0.9);opacity:0;animation:titleReveal 1s ease-out 0.85s forwards;">Ascended</span>
+        </sc-if>
+      </div>
 
       <div style="font-family:'EB Garamond',serif;font-size:19px;font-style:italic;color:rgba(230,220,212,0.75);border-left:2px solid rgba(201,67,63,0.5);padding-left:16px;margin-top:14px;max-width:520px;">"Tenho medo, mas não me falta coragem."</div>
 
@@ -47,14 +70,24 @@
       </div>
 
       <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:24px;">
-        <button onClick="{{ openSheetModal }}" style="padding:14px 36px;background:transparent;border:1px solid rgba(201,67,63,0.65);color:#eadfd6;font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.24em;text-transform:uppercase;cursor:pointer;transition:box-shadow 0.4s ease, background 0.4s ease;" style-hover="background:rgba(120,14,16,0.25);box-shadow:0 0 24px rgba(201,67,63,0.6);">Character Sheet</button>
-        <button onClick="{{ openSheetModal }}" onMouseEnter="{{ showEmperor }}" onMouseLeave="{{ hideEmperor }}" style="padding:14px 36px;background:transparent;border:1px solid rgba(212,175,90,0.7);color:#e8d9a8;font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.24em;text-transform:uppercase;cursor:pointer;transition:box-shadow 0.4s ease, background 0.4s ease;" style-hover="background:rgba(150,110,20,0.2);box-shadow:0 0 24px rgba(212,175,90,0.6);">Emperor Sheet</button>
+        <button onClick="{{ openSheetModal }}" style="padding:14px 36px;background:transparent;border:1px solid rgba(212,175,90,0.7);color:#e8d9a8;font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.24em;text-transform:uppercase;cursor:pointer;transition:box-shadow 0.4s ease, background 0.4s ease;" style-hover="background:rgba(150,110,20,0.2);box-shadow:0 0 24px rgba(212,175,90,0.6);">Emperor Sheet</button>
+        <div style="position:relative;display:inline-flex;">
+          <button disabled="{{ true }}" style="padding:14px 36px;background:transparent;border:1px solid rgba(201,67,63,0.3);color:rgba(230,220,212,0.3);font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.24em;text-transform:uppercase;cursor:not-allowed;">Character Sheet</button>
+          <sc-if value="{{ cursed }}" hint-placeholder-val="{{ false }}">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;opacity:0;animation:titleReveal 0.9s ease-out 0.45s forwards;">
+              <line x1="4" y1="6" x2="96" y2="94" stroke="rgba(212,175,90,0.9)" stroke-width="2.5" stroke-linecap="round" vector-effect="non-scaling-stroke"></line>
+              <line x1="96" y1="6" x2="4" y2="94" stroke="rgba(212,175,90,0.9)" stroke-width="2.5" stroke-linecap="round" vector-effect="non-scaling-stroke"></line>
+            </svg>
+          </sc-if>
+        </div>
       </div>
     </div>
 
     <div style="position:relative;flex:1 1 380px;min-height:60vh;overflow:hidden;background:#0a0605;">
       <div style="position:absolute;inset:0;background-image:url('uploads/create-a-vertical-3-4-full-body-portrait-of-aziza-.png');background-size:cover;background-position:60% 15%;transition:opacity 0.6s ease;opacity:{{ baseOpacity }};"></div>
-      <div style="position:absolute;inset:0;background-image:url('uploads/now-make-nasus-from-league-of-legends-in-this-exac.png');background-size:cover;background-position:center 20%;transform:scale(1.1);transition:opacity 0.6s ease;opacity:{{ curseOpacity }};"></div>
+      <sc-if value="{{ cursed }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:0;background-image:url('uploads/remove-the-solar-disk-and-make-the-background-whit.png');background-size:cover;background-position:center 20%;opacity:0;animation:azizaGlitch 0.9s steps(2, end) 1 forwards;"></div>
+      </sc-if>
       <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%, rgba(230,190,90,0.55) 0%, transparent 65%);mix-blend-mode:screen;transition:opacity 0.6s ease;opacity:{{ curseOpacity }};"></div>
       <div style="position:absolute;inset:0;background:linear-gradient(90deg, rgba(10,6,5,0.85) 0%, rgba(10,6,5,0.15) 35%, transparent 60%);"></div>
       <div style="position:absolute;inset:0;background:linear-gradient(0deg, rgba(10,6,5,0.7) 0%, transparent 30%);"></div>
@@ -114,11 +147,20 @@
 class Component extends DCLogic {
   state = { sheetModalOpen: false, cursed: false, galleryLightboxSrc: null, galleryLightboxCaption: null };
 
+  componentDidMount() {
+    this._glitchTimer = setTimeout(() => this.setState({ cursed: true }), 2000);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._glitchTimer);
+  }
+
   renderVals() {
     const photos = [
-      { src: 'uploads/aziza-carriage-motion-blur.png', caption: 'Dia 1 - Indo Para Arbormark' },
+      { src: 'uploads/aziza-carriage-motion-blur.png', caption: 'The Invitation' },
       { src: 'uploads/aziza-forest-focus-blur.png', caption: 'E a maldição começa!' },
       null, null, null,
+      { src: 'uploads/aziza-sundisc-motion-blur.png', caption: 'The Titan War - The Sun Disc' },
     ];
     const galleryPlaceholders = photos.map((p, i) => {
       const src = p && typeof p === 'object' ? p.src : p;
@@ -140,10 +182,12 @@ class Component extends DCLogic {
       openSheetModal: () => this.setState({ sheetModalOpen: true }),
       closeSheetModal: () => this.setState({ sheetModalOpen: false }),
       stopPropagation: (e) => e.stopPropagation(),
-      showEmperor: () => this.setState({ cursed: true }),
-      hideEmperor: () => this.setState({ cursed: false }),
+
       baseOpacity: this.state.cursed ? 0 : 1,
       curseOpacity: this.state.cursed ? 1 : 0,
+      cursed: this.state.cursed,
+      nameColor: this.state.cursed ? 'rgba(230,220,212,0.32)' : '#eadfd6',
+      roleColor: this.state.cursed ? 'rgba(230,220,212,0.35)' : 'rgba(230,220,212,0.6)',
     };
   }
 }
