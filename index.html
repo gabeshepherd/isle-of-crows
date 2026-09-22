@@ -49,7 +49,7 @@
 
       <div style="position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse at 50% 48%, rgba(6,3,3,0.42) 0%, rgba(6,3,3,0.75) 55%, rgba(6,3,3,0.93) 100%);"></div>
 
-      <div style="position:absolute;inset:-6%;z-index:1;background-image:url('uploads/red-moon-with-red-sky-background_1153744-176560.avif');background-size:cover;background-position:center 35%;opacity:0.5;mix-blend-mode:screen;animation:slowZoom 20s ease-in-out infinite alternate;"></div>
+      <div style="position:absolute;inset:-6%;z-index:1;background-image:url('uploads/Screenshot 2026-08-24 at 23.25.34.png');background-size:cover;background-position:center 35%;opacity:0.5;mix-blend-mode:screen;animation:slowZoom 20s ease-in-out infinite alternate;"></div>
       <div style="position:absolute;left:-15%;top:5%;width:80%;height:60%;z-index:1;background:radial-gradient(ellipse, rgba(60,20,20,0.5) 0%, transparent 70%);filter:blur(38px);animation:fogDrift1 30s ease-in-out infinite;"></div>
       <div style="position:absolute;right:-20%;bottom:0;width:90%;height:55%;z-index:1;background:radial-gradient(ellipse, rgba(40,14,14,0.45) 0%, transparent 70%);filter:blur(44px);animation:fogDrift2 36s ease-in-out infinite;"></div>
       <div style="position:absolute;left:-10%;top:-10%;width:120%;height:70%;z-index:1;background:radial-gradient(ellipse, rgba(70,24,24,0.4) 0%, transparent 72%);filter:blur(50px);animation:fogDrift3 44s ease-in-out infinite;"></div>
@@ -138,6 +138,20 @@
               <sc-if value="{{ c.claimed }}" hint-placeholder-val="{{ false }}">
                 <div style="margin-top:2px;padding:4px 11px 3px;border:1px solid rgba(74,116,104,0.34);background:linear-gradient(180deg, rgba(18,42,38,0.45), rgba(8,20,18,0.3));font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:0.36em;color:rgba(158,200,182,0.85);text-transform:uppercase;filter:blur(0.15px);animation:claimedGlow 4.4s ease-in-out infinite;">Claimed</div>
               </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="position:relative;display:flex;gap:28px;flex-wrap:wrap;justify-content:center;">
+          <sc-for list="{{ deadCharacters }}" as="c" hint-placeholder-count="1">
+            <div style="width:210px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+              <div style="position:relative;width:180px;height:230px;">
+                <div style="{{ c.frameStyle }}">portrait pending</div>
+                <div style="position:absolute;inset:0;background:rgba(6,3,3,0.45);"></div>
+                <div style="position:absolute;inset:0;pointer-events:none;background-image:url('uploads/-Pngtree-the red cross on blood_6185642.png');background-size:contain;background-position:center;background-repeat:no-repeat;opacity:0.5;"></div>
+              </div>
+              <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:0.06em;color:rgba(230,220,212,0.55);">{{ c.name }}</div>
+              <div style="margin-top:2px;padding:4px 11px 3px;border:1px solid rgba(120,28,28,0.45);background:linear-gradient(180deg, rgba(48,12,12,0.5), rgba(18,6,6,0.35));font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:0.36em;color:rgba(206,132,128,0.9);text-transform:uppercase;">{{ c.badge }}</div>
             </div>
           </sc-for>
         </div>
@@ -235,7 +249,7 @@
         <div style="position:relative;z-index:2;max-width:520px;font-family:'EB Garamond',serif;font-size:16px;line-height:1.8;color:rgba(230,220,212,0.5);font-style:italic;margin-top:clamp(-18px,-1.8vw,-6px);">What the crows saw, and what we managed to keep.</div>
 
         <div style="position:relative;z-index:2;display:flex;gap:20px;flex-wrap:wrap;justify-content:center;max-width:900px;margin-top:32px;">
-          <sc-for list="{{ seasonGalleryPlaceholders }}" as="p" hint-placeholder-count="4">
+          <sc-for list="{{ seasonGalleryPlaceholders }}" as="p" hint-placeholder-count="5">
             <sc-if value="{{ p.src }}" hint-placeholder-val="{{ false }}">
               <div onClick="{{ p.openZoom }}" style="width:260px;height:150px;background-image:url('{{ p.src }}');background-size:cover;background-position:center;border:1px solid rgba(201,67,63,0.4);cursor:zoom-in;filter:grayscale(1) brightness(0.65);transition:filter 0.4s ease;" style-hover="filter:grayscale(0) brightness(1);"></div>
             </sc-if>
@@ -510,6 +524,7 @@ class Component extends DCLogic {
       stopPropagation: (e) => e.stopPropagation(),
       seasonGalleryPlaceholders: [
         null,
+        { src: 'uploads/move-the-island-further-into-the-distance--making-.png', caption: '"The Isle Of Crows" Chapter' },
         null,
         { src: 'uploads/it-s-great--now--add-a-blue-ish-magic-dome-that-s--0be8d826.png', caption: '"The Titans Await" Chapter' },
         null,
@@ -527,8 +542,29 @@ class Component extends DCLogic {
         { name: 'Adhara', pageHref: 'Adhara.dc.html', frameStyle: this.portraitFrame(false, 'uploads/zoom-out-the-image-a-little-bit-so-it-should-up-to.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-with-only-her-hair-moving-a-lit.mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
         { name: 'The Emperor', ascended: true, pageHref: 'Aziza.dc.html', frameStyle: this.portraitFrame(false, 'uploads/replace-the-heart-on-the-center-with-the-solar-dis (1).png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-but-only-making-the-disc-floati.mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
         { name: 'Oramond', pageHref: 'Oramond.dc.html', frameStyle: this.portraitFrame(false, 'uploads/make-her-missing-the-top-of-her-fingers-from-the-l.png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animate-this-image-with-only-her-hair-moving-a-lit (1).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
-        { name: 'Serafini', claimed: true, pageHref: 'Serafini.dc.html', frameStyle: this.portraitFrame(false, 'uploads/using-the-attached-serafini-image-as-the-character (1).png'), videoStyle: this.videoOverlayStyle(false), videoRefSetter: this.videoRefSetter('uploads/animated-only-the-green-fog-and-maybe-close-the-ch (1).mp4'), playVideo: (e) => { e.currentTarget.playbackRate = 0.5; e.currentTarget.play(); }, pauseVideo: (e) => e.currentTarget.pause() },
       ]),
+      deadCharacters: [
+        { name: 'Serafini', badge: 'Dead', frameStyle: {
+          width: '100%',
+          height: '100%',
+          backgroundImage: 'url("uploads/using-the-attached-serafini-image-as-the-character (1).png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 20%',
+          border: '1px solid rgba(255,255,255,0.08)',
+          color: 'transparent',
+          filter: 'grayscale(1) brightness(0.55) contrast(1.05)',
+        } },
+        { name: 'Babette', badge: 'Gone', frameStyle: {
+          width: '100%',
+          height: '100%',
+          backgroundImage: 'url("uploads/Screenshot 2026-09-21 at 21.58.37.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 20%',
+          border: '1px solid rgba(255,255,255,0.08)',
+          color: 'transparent',
+          filter: 'grayscale(1) brightness(0.55) contrast(1.05)',
+        } },
+      ],
       fallenCharacters: [
         { name: 'Babette', deceased: true, frameStyle: this.portraitFrame(true) },
         { name: 'Aelena', deceased: true, frameStyle: this.portraitFrame(true) },
