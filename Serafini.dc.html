@@ -144,7 +144,7 @@
   <section style="min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:80px 24px;border-top:1px solid rgba(255,255,255,0.06);">
     <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.35em;color:rgba(230,220,212,0.5);text-transform:uppercase;">Diary</div>
     <div style="font-family:'Tisk','Pirata One',serif;font-size:clamp(38px,5vw,58px);color:#eadfd6;margin-top:-6px;">The Private Pages</div>
-    <div style="max-width:520px;font-family:'EB Garamond',serif;font-size:16px;line-height:1.8;color:rgba(230,220,212,0.5);font-style:italic;">Diary unavailable. Quando tiver escrito, me mande por favor que eu coloco aqui!</div>
+    <div style="max-width:520px;font-family:'EB Garamond',serif;font-size:16px;line-height:1.8;color:rgba(230,220,212,0.5);font-style:italic;">Unavailable. Will be posted once the players stop being lazy.</div>
   </section>
 
   <section style="min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:80px 24px;border-top:1px solid rgba(255,255,255,0.06);">
@@ -201,6 +201,7 @@ class Component extends DCLogic {
       { src: 'uploads/serafini-demon-scene-blur.png', caption: 'Back to life?' },
       { src: 'uploads/serafini-lux-spiral-blur.png', caption: 'Undead Blood + Radiant Lux' },
       { src: 'uploads/add-a-big-motion-blur-to-the-image.png', caption: 'The Titan War - The End Of Everything' },
+      null,
     ];
     const galleryPlaceholders = photos.map((p, i) => {
       const src = p && typeof p === 'object' ? p.src : p;

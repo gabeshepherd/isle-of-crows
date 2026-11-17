@@ -1,6 +1,5 @@
 /* Isle of Crows — the poster, brought to life for the gateway.
-   Same language as the Isle of Crows homescreen: ink-dark sand carried by the
-   wind, crow feathers tumbling down, pale bands of light sweeping across.
+   Only crow feathers tumbling down over the poster — kept deliberately clean.
    Drawn on a canvas laid over the poster art. setGust(n) strengthens the wind. */
 (function () {
   function rng(seed) {
@@ -19,14 +18,8 @@
     var W = 0, H = 0, dpr = 1, raf = 0, last = 0, t = 0, alive = true, visible = true;
     var gust = 1, gustTarget = 1;
 
-    var GRAINS = 260, gx = [], gy = [], gv = [], gs = [], ga = [], gp = [];
-    for (var i = 0; i < GRAINS; i++) {
-      gx.push(r()); gy.push(0.3 + Math.pow(r(), 0.7) * 0.72); gv.push(0.06 + r() * 0.16);
-      gs.push(0.7 + Math.pow(r(), 2) * 1.8); ga.push(0.22 + r() * 0.5); gp.push(r() * 6.28);
-    }
     var FEATHERS = [];
-    for (i = 0; i < 6; i++) FEATHERS.push({ x: 0.12 + r() * 0.76, p: r(), v: 0.035 + r() * 0.03, s: 0.8 + r() * 0.6, sw: r() * 6.28, rot: r() * 6.28 });
-    var BANDS = [{ y: 0.46, h: 0.07, v: 0.05, p: 0.1 }, { y: 0.6, h: 0.1, v: 0.038, p: 0.55 }, { y: 0.74, h: 0.12, v: 0.03, p: 0.85 }];
+    for (var i = 0; i < 6; i++) FEATHERS.push({ x: 0.12 + r() * 0.76, p: r(), v: 0.035 + r() * 0.03, s: 0.8 + r() * 0.6, sw: r() * 6.28, rot: r() * 6.28 });
 
     function resize() {
       W = canvas.clientWidth; H = canvas.clientHeight; if (!W || !H) return false;
@@ -56,31 +49,6 @@
       var c = canvas.getContext('2d');
       c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, W, H);
 
-      // bands of light carried across
-      c.globalCompositeOperation = 'lighter';
-      for (var b = 0; b < BANDS.length; b++) {
-        var B = BANDS[b], ph = (B.p + t * B.v * (0.6 + gust * 0.4)) % 1;
-        var bx = -0.6 * W + ph * 2.2 * W, bw = W * 0.55, by = B.y * H, bh = B.h * H;
-        var lg = c.createLinearGradient(bx, 0, bx + bw, 0);
-        lg.addColorStop(0, 'rgba(237,227,214,0)'); lg.addColorStop(0.5, 'rgba(237,227,214,0.12)'); lg.addColorStop(1, 'rgba(237,227,214,0)');
-        var vg = c.createLinearGradient(0, by, 0, by + bh);
-        c.fillStyle = lg; c.globalAlpha = 1;
-        c.save(); c.beginPath(); c.rect(bx, by, bw, bh); c.clip();
-        c.fillRect(bx, by, bw, bh);
-        c.restore();
-      }
-      c.globalCompositeOperation = 'source-over';
-
-      // sand
-      c.fillStyle = 'rgb(26,21,18)';
-      for (var i = 0; i < GRAINS; i++) {
-        var u = (gx[i] + t * gv[i] * gust) % 1.1 - 0.05;
-        var x = u * W, y = gy[i] * H + Math.sin(t * 1.3 + gp[i]) * 3 - u * 6;
-        var edge = Math.min(1, Math.min(u + 0.05, 1.05 - u) * 8);
-        c.globalAlpha = ga[i] * edge;
-        var sx = gs[i] * (1.25 + gust * 0.45), sy = gs[i] * 0.8;
-        c.fillRect(x, y, sx, sy);
-      }
       // feathers
       for (var f = 0; f < FEATHERS.length; f++) {
         var F = FEATHERS[f], v = (F.p + t * F.v) % 1;
