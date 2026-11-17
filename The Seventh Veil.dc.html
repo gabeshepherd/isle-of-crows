@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Seventh Veil</title>
+<script src="./tsv-hourglass.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;background:#090609;}
+    .tsv{position:relative;background:#090609;color:#ece4d8;font-family:'Cormorant Garamond',Georgia,serif;overflow:clip;animation:tsvFade 1.8s ease both;}
+    .tsv *{box-sizing:border-box;}
+    .tsv-vignette{position:fixed;inset:0;pointer-events:none;z-index:3;background:radial-gradient(ellipse 110% 85% at 50% 48%, transparent 48%, rgba(0,0,0,0.6) 100%);}
+    .tsv-grain{position:fixed;inset:0;pointer-events:none;z-index:4;opacity:0.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.7 0 0 0 -0.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px 180px;animation:tsvGrain 1.6s steps(4) infinite;}
+    .tsv-small{font-size:11px;font-weight:500;letter-spacing:0.4em;text-transform:uppercase;}
+
+    /* ——— HERO: the poster, opened up to widescreen ——— */
+    .tsv-hero{--lw:clamp(300px,31vw,540px);--top:clamp(58px,7.5vh,80px);position:relative;z-index:2;height:100vh;height:100svh;min-height:680px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:var(--top) 24px 0;overflow:hidden;}
+    .tsv-stage{position:relative;z-index:2;flex:0 0 auto;height:calc(100vh - var(--top) - var(--lw) * 0.2722 * 0.7);height:calc(max(100svh, 680px) - var(--top) - var(--lw) * 0.2722 * 0.7);max-height:1180px;aspect-ratio:765/1060;max-width:100%;animation:tsvArt 3.2s cubic-bezier(.2,.6,.2,1) .2s both;}
+    .tsv-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;outline:none;transition:transform 3s cubic-bezier(.2,.6,.2,1), filter 3s ease;}
+    .tsv-hero.is-holding .tsv-canvas{cursor:grabbing;}
+    .tsv-canvas:focus-visible{outline:1px solid rgba(236,228,216,0.35);outline-offset:4px;}
+    .tsv-title{position:relative;z-index:5;margin:calc(var(--lw) * -0.2722 * 0.3) 0 0;line-height:0;animation:tsvRise 2.2s ease .8s both;}
+    .tsv-logo{display:block;width:var(--lw);height:auto;}
+
+    .tsv-c{position:absolute;z-index:5;}
+    .tsv-back{top:clamp(26px,4vh,40px);left:clamp(24px,3vw,48px);color:rgba(236,228,216,0.55);text-decoration:none;padding:6px 0;transition:color .5s ease;animation:tsvRise 2s ease 1.8s both;}
+    .tsv-back:hover,.tsv-back:focus-visible{color:#ece4d8;}
+    .tsv-back:focus-visible,.tsv-link:focus-visible,.tsv-x:focus-visible{outline:1px solid rgba(236,228,216,0.5);outline-offset:6px;}
+    .tsv-tag{top:clamp(30px,4.4vh,44px);left:50%;transform:translateX(-50%);margin:0;padding-left:0.5em;letter-spacing:0.5em;white-space:nowrap;color:rgba(236,228,216,0.7);animation:tsvFadeIn 2s ease 1.2s both;}
+    .tsv-clock{top:clamp(26px,4vh,40px);right:clamp(24px,3vw,48px);padding:6px 0;margin:0;font-variant-numeric:tabular-nums;letter-spacing:0.32em;color:rgba(236,228,216,0.62);transition:color .6s ease;animation:tsvRise 2s ease 2s both;}
+    .tsv-hero.is-holding .tsv-clock{color:#f1ebe2;}
+    /* the hint sits beside the star field, a hairline pointing into it */
+    .tsv-hint{position:absolute;left:73%;top:24%;z-index:3;display:flex;align-items:center;gap:14px;margin:0;width:max-content;white-space:nowrap;font-size:18px;line-height:1.35;font-style:italic;font-weight:300;color:rgba(236,228,216,0.66);pointer-events:none;opacity:0;transition:opacity 1.8s ease, color .8s ease;}
+    .tsv-hint::before{content:"";flex:0 0 auto;width:clamp(28px,3vw,48px);height:1px;background:linear-gradient(90deg, rgba(236,228,216,0), rgba(236,228,216,0.5));}
+    .tsv-hint b{font-weight:500;font-style:italic;color:#f6f1e8;letter-spacing:0.01em;}
+    .tsv-hint.is-shown{opacity:1;}
+    .tsv-hint.is-used{opacity:0.3;}
+    .tsv-hero.is-holding .tsv-hint{opacity:0;}
+
+    /* easter egg: hold for five seconds */
+    .tsv-fx{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;}
+    .tsv-flood{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity 2.4s ease;background:radial-gradient(ellipse 75% 65% at 50% 62%, rgba(236,228,216,0.16), rgba(236,228,216,0.04) 45%, transparent 75%);}
+    .tsv-hero.is-veil .tsv-flood{opacity:1;}
+    .tsv-hero.is-veil .tsv-canvas{transform:scale(1.035);filter:brightness(1.12) contrast(1.06);}
+    .tsv-tag .b{position:absolute;left:0;right:0;text-align:center;opacity:0;transition:opacity 1.4s ease;}
+    .tsv-tag .a{transition:opacity 1.4s ease;}
+    .tsv-hero.is-veil .tsv-tag .a{opacity:0;}
+    .tsv-hero.is-veil .tsv-tag .b{opacity:1;}
+    .tsv-hero.is-veil .tsv-clock{color:#fff;}
+    .tsv:has(.tsv-hero.is-veil) .tsv-grain{opacity:0.13;}
+    .tsv-grain{transition:opacity 2s ease;}
+    .tsv-soon{bottom:clamp(38px,5.8vh,64px);right:clamp(24px,3vw,48px);margin:0;display:flex;align-items:center;gap:14px;color:rgba(236,228,216,0.7);animation:tsvRise 2s ease 2.2s both;}
+    .tsv-soon::before{content:"";display:block;width:32px;height:1px;background:rgba(236,228,216,0.4);}
+
+    /* ——— STORY: an editorial dossier ——— */
+    .tsv-story{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:clamp(90px,14vh,160px) clamp(24px,5vw,72px) 0;}
+    .tsv-part{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.1fr);column-gap:clamp(40px,6vw,110px);padding:clamp(70px,11vh,120px) 0;border-top:1px solid rgba(236,228,216,0.1);}
+    .tsv-part:first-child{border-top:0;padding-top:0;}
+    .tsv-head{align-self:start;position:sticky;top:clamp(80px,14vh,140px);}
+    .tsv-kicker{margin:0 0 14px;color:rgba(236,228,216,0.5);}
+    .tsv-h{margin:0;font-weight:400;font-size:clamp(30px,2.7vw,42px);line-height:1.1;color:#f1ebe2;}
+    .tsv-h em{display:block;margin-top:10px;font-size:0.6em;font-weight:300;color:rgba(236,228,216,0.62);}
+    .tsv-text{max-width:35em;font-size:clamp(18px,1.25vw,20px);line-height:1.78;color:rgba(236,228,216,0.72);}
+    .tsv-text p{margin:0 0 1.35em;text-wrap:pretty;}
+    .tsv-text em{font-style:italic;color:rgba(236,228,216,0.95);}
+    .tsv-lead{font-size:clamp(30px,2.9vw,44px);line-height:1.18;font-weight:300;font-style:italic;color:#f1ebe2;margin-bottom:1.1em !important;text-wrap:balance;}
+    .tsv-name{font-size:1.3em;line-height:1.5;color:rgba(236,228,216,0.86);margin:1.8em 0 !important;}
+    .tsv-name em{font-size:1.25em;}
+    .tsv-pull{margin:2em 0 2em !important;padding:0.2em 0 0.2em 1.2em;border-left:1px solid rgba(236,228,216,0.35);font-size:1.32em;line-height:1.45;font-style:italic;font-weight:300;color:rgba(236,228,216,0.92);}
+    .tsv-mark{color:rgba(236,228,216,0.9);}
+    .tsv-maybe{margin:2.4em 0 0 !important;padding-bottom:3.2em;font-size:1.5em;line-height:1.4;font-style:italic;font-weight:300;}
+    .tsv-maybe > span{display:block;color:rgba(236,228,216,0.9);}
+    .tsv-broken{position:relative;width:max-content;max-width:100%;margin-top:0.2em;font-size:1.75em;line-height:1.2;font-weight:400;color:#f6f1e8;}
+    .tsv-broken-txt{display:inline-block;}
+    .tsv-broken.is-dust .tsv-broken-txt{color:transparent;}
+    .tsv-dust-cv{position:absolute;pointer-events:none;}
+
+    .tsv-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0 0 2.6em;padding:0;list-style:none;border-top:1px solid rgba(236,228,216,0.12);}
+    .tsv-facts li{padding:16px 16px 16px 0;border-bottom:1px solid rgba(236,228,216,0.12);}
+    .tsv-facts li:nth-child(odd){padding-right:24px;}
+    .tsv-facts dt,.tsv-facts .k{display:block;margin-bottom:6px;color:rgba(236,228,216,0.48);}
+    .tsv-facts .v{font-size:19px;line-height:1.35;color:rgba(236,228,216,0.9);}
+
+    .tsv-finale{display:flex;flex-direction:column;align-items:center;text-align:center;padding:clamp(100px,16vh,180px) 0 clamp(80px,12vh,130px);border-top:1px solid rgba(236,228,216,0.1);}
+    .tsv-finale p{margin:0;}
+    .tsv-f1{font-size:clamp(26px,2.4vw,36px);font-weight:300;font-style:italic;color:rgba(236,228,216,0.7);}
+    .tsv-f2{margin-top:0.35em !important;font-size:clamp(36px,4.2vw,62px);line-height:1.12;font-style:italic;font-weight:400;color:#f6f1e8;max-width:14em;text-wrap:balance;}
+    .tsv-docs{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:22px;}
+    .tsv-feature{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:12px;width:min(640px,100%);margin-top:clamp(64px,10vh,100px);padding:clamp(34px,5vh,48px) clamp(24px,4vw,56px);border:1px solid rgba(236,228,216,0.5);color:#f6f1e8;text-decoration:none;background:radial-gradient(ellipse 80% 120% at 50% 0%, rgba(236,228,216,0.08), transparent 70%);transition:border-color .6s ease, background .6s ease, transform .8s cubic-bezier(.2,.7,.2,1);animation:tsvBeckon 4.5s ease-in-out infinite;}
+    .tsv-feature::after{content:"";position:absolute;top:0;bottom:0;left:-40%;width:30%;background:linear-gradient(90deg, transparent, rgba(255,250,240,0.12), transparent);transform:skewX(-18deg);animation:tsvGlint 5.5s ease-in-out 1.5s infinite;}
+    .tsv-feature:hover,.tsv-feature:focus-visible{border-color:rgba(236,228,216,0.9);background:radial-gradient(ellipse 80% 120% at 50% 0%, rgba(236,228,216,0.14), transparent 70%);transform:translateY(-3px);}
+    .tsv-feature:focus-visible{outline:1px solid rgba(236,228,216,0.5);outline-offset:6px;}
+    .tsv-feature-k{color:rgba(236,228,216,0.6);}
+    .tsv-feature-t{font-size:clamp(34px,3.6vw,50px);line-height:1.05;font-weight:300;font-style:italic;}
+    .tsv-feature-d{max-width:26em;font-size:18px;line-height:1.55;font-style:italic;color:rgba(236,228,216,0.68);}
+    .tsv-feature-go{margin-top:8px;color:#f6f1e8;}
+    @keyframes tsvBeckon{0%,100%{box-shadow:0 0 0 rgba(236,228,216,0)}50%{box-shadow:0 0 42px rgba(236,228,216,0.12)}}
+    @keyframes tsvGlint{0%{left:-40%}35%,100%{left:130%}}
+    .tsv-link{display:flex;align-items:center;gap:22px;min-width:240px;justify-content:space-between;padding:18px 22px;background:transparent;border:1px solid rgba(236,228,216,0.22);color:#ece4d8;font-family:inherit;cursor:pointer;transition:border-color .5s ease, background .5s ease;}
+    .tsv-link:hover{border-color:rgba(236,228,216,0.6);background:rgba(236,228,216,0.03);}
+    .tsv-link .t{font-size:20px;font-style:italic;font-weight:400;letter-spacing:0;text-transform:none;}
+    .tsv-link .k{color:rgba(236,228,216,0.5);}
+    .tsv-out{display:flex;flex-direction:column;align-items:center;gap:22px;margin-top:clamp(70px,11vh,110px);}
+    .tsv-out img{width:clamp(170px,14vw,220px);height:auto;opacity:0.8;}
+    .tsv-out a{color:rgba(236,228,216,0.45);text-decoration:none;padding:6px 0;transition:color .5s ease;}
+    .tsv-out a:hover,.tsv-out a:focus-visible{color:#ece4d8;}
+
+    /* ——— PDF modal ——— */
+    .tsv-modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:clamp(12px,3vw,40px);background:rgba(4,3,4,0.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:tsvFadeIn .5s ease both;}
+    .tsv-sheet{position:relative;width:min(560px,100%);display:flex;flex-direction:column;background:#0d0a0d;border:1px solid rgba(236,228,216,0.16);box-shadow:0 40px 120px rgba(0,0,0,0.8);animation:tsvRise .6s ease both;}
+    .tsv-doc{display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:clamp(40px,7vh,64px) clamp(24px,5vw,48px) clamp(36px,6vh,56px);}
+    .tsv-doc-k{margin:0;color:rgba(236,228,216,0.5);}
+    .tsv-doc-t{margin:0;font-size:clamp(40px,5vw,56px);line-height:1;font-weight:300;font-style:italic;color:#f6f1e8;}
+    .tsv-doc-p{margin:6px 0 0;max-width:24em;font-size:18px;line-height:1.6;font-style:italic;color:rgba(236,228,216,0.62);}
+    .tsv-open{margin-top:14px;display:inline-flex;align-items:center;gap:16px;padding:16px 26px;border:1px solid rgba(236,228,216,0.4);color:#f6f1e8;text-decoration:none;transition:border-color .5s ease, background .5s ease;}
+    .tsv-open:hover,.tsv-open:focus-visible{border-color:rgba(236,228,216,0.85);background:rgba(236,228,216,0.05);}
+    .tsv-open:focus-visible{outline:1px solid rgba(236,228,216,0.5);outline-offset:6px;}
+    .tsv-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 18px 14px 22px;border-bottom:1px solid rgba(236,228,216,0.1);}
+    .tsv-bar h2{margin:0;font-size:22px;font-weight:400;font-style:italic;color:#f1ebe2;}
+    .tsv-bar-r{display:flex;align-items:center;gap:18px;}
+    .tsv-bar a{color:rgba(236,228,216,0.55);text-decoration:none;}
+    .tsv-bar a:hover{color:#ece4d8;}
+    .tsv-x{padding:8px 14px;background:transparent;border:1px solid rgba(236,228,216,0.25);color:#ece4d8;font-family:inherit;cursor:pointer;}
+    .tsv-x:hover{border-color:rgba(236,228,216,0.6);}
+    .tsv-frame{flex:1;width:100%;border:0;background:#141014;}
+    .tsv-empty{flex:1;display:flex;align-items:center;justify-content:center;padding:32px;text-align:center;font-size:20px;font-style:italic;color:rgba(236,228,216,0.6);}
+
+    /* reveal on scroll (only once the script is running) */
+    .js-reveal .tsv-r{opacity:0;transform:translateY(16px);transition:opacity 1.6s cubic-bezier(.2,.6,.2,1), transform 1.6s cubic-bezier(.2,.6,.2,1);}
+    .js-reveal .tsv-r.is-in{opacity:1;transform:none;}
+    .js-reveal .tsv-maybe > span{opacity:0;transition:opacity 1.8s ease;}
+    .js-reveal .tsv-maybe.is-in > span{opacity:1;}
+    .js-reveal .tsv-maybe.is-in > span + span{transition-delay:1.2s;}
+
+    @keyframes tsvFade{from{opacity:0}to{opacity:1}}
+    @keyframes tsvFadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes tsvArt{from{opacity:0;transform:scale(1.025)}to{opacity:1;transform:scale(1)}}
+    @keyframes tsvRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes tsvGrain{0%{background-position:0 0}25%{background-position:-37px 21px}50%{background-position:53px -44px}75%{background-position:-18px -62px}100%{background-position:0 0}}
+
+    @media (max-width: 880px){
+      .tsv-hero{height:auto;min-height:0;justify-content:flex-start;padding:20px 22px 64px;}
+      .tsv-c{position:static;transform:none;}
+      .tsv-back{align-self:flex-start;font-size:10.5px;}
+      .tsv-tag{margin-top:clamp(40px,7vh,60px);font-size:10.5px;letter-spacing:0.36em;padding-left:0.36em;}
+      .tsv-stage{height:auto;width:min(82vw,430px);margin-top:24px;margin-bottom:3.8em;}
+      .tsv-title{margin-top:0;}
+      .tsv-tag{position:relative;left:auto;top:auto;}
+      .tsv-logo{width:min(84vw,420px);}
+      .tsv-clock{margin-top:22px;}
+      .tsv-hint{left:50%;top:auto;bottom:-2.6em;transform:translateX(-50%);max-width:88vw;white-space:normal;text-align:center;font-size:16px;}
+      .tsv-hint::before{display:none;}
+      .tsv-title{order:0;}
+      .tsv-soon{margin-top:30px;}
+      .tsv-story{padding-top:40px;}
+      .tsv-part{grid-template-columns:1fr;row-gap:36px;padding:72px 0;}
+      .tsv-head{position:static;}
+      .tsv-facts{grid-template-columns:1fr;}
+            .tsv-link{min-width:0;width:100%;}
+      .tsv-docs{width:100%;flex-direction:column;}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .tsv,.tsv-stage,.tsv-title,.tsv-c,.tsv-grain,.tsv-modal,.tsv-sheet,.tsv-feature,.tsv-feature::after{animation:none !important;}
+      .tsv-fx,.tsv-flood{display:none;}
+      .js-reveal .tsv-r,.js-reveal .tsv-maybe > span{opacity:1 !important;transform:none !important;transition:none !important;}
+    }
+  </style>
+</helmet>
+
+<main class="tsv">
+
+  <section class="tsv-hero" aria-label="The Seventh Veil">
+    <a class="tsv-c tsv-back tsv-small" href="./">&larr;&nbsp; Voltar ao portal</a>
+    <div class="tsv-flood" aria-hidden="true"></div>
+    <p class="tsv-c tsv-tag tsv-small"><span class="a" lang="en">Where does a moment go?</span><span class="b" aria-hidden="true">Ainda não é a hora.</span></p>
+    <p class="tsv-c tsv-clock tsv-small" data-clock="" aria-hidden="true">--:--:--</p>
+
+    <div class="tsv-stage" ref="{{ setStage }}">
+      <canvas class="tsv-canvas" tabindex="0" role="img" aria-label="Uma ampulheta de estrelas escorre por um único ponto e cai como luz sobre uma pequena porta iluminada. Mantenha pressionado para fazer o tempo voltar."></canvas>
+      <p class="tsv-hint" data-hint="" aria-hidden="true" lang="en"><span>how long can you <b>hold</b> a moment?</span></p>
+    </div>
+    <h1 class="tsv-title"><img class="tsv-logo" src="uploads/tsv-logo.png" width="731" height="199" decoding="async" alt="The Seventh Veil"></h1>
+
+    <p class="tsv-c tsv-soon tsv-small">Em breve</p>
+    <canvas class="tsv-fx" data-fx="" aria-hidden="true"></canvas>
+  </section>
+
+  <div class="tsv-story" ref="{{ setStory }}">
+
+    <section class="tsv-part" aria-labelledby="tsv-h1">
+      <header class="tsv-head tsv-r">
+        <p class="tsv-kicker tsv-small">I</p>
+        <h2 class="tsv-h" id="tsv-h1">The Seventh Veil<em lang="en">Where Does a Moment Go?</em></h2>
+      </header>
+      <div class="tsv-text">
+        <p class="tsv-r tsv-lead">Há coisas que o tempo não consegue explicar.</p>
+        <p class="tsv-r">Runeterra é um mundo marcado por guerras, impérios, magia e acontecimentos que desafiam a compreensão dos mortais. Civilizações surgiram e desapareceram, deuses caminharam entre homens e forças ancestrais moldaram o destino de nações inteiras.</p>
+        <p class="tsv-r">Ainda assim, entre tantas maravilhas e horrores, existe algo que nem mesmo os maiores estudiosos conseguiram compreender completamente: <span class="tsv-mark">o próprio tempo.</span></p>
+        <p class="tsv-r">Há anos, pequenos fenômenos inexplicáveis agora fazem parte da vida cotidiana. Cartas chegam antes de serem escritas. Relógios atrasam exatamente o mesmo minuto, independentemente de onde estejam. Estranhos compartilham lembranças de encontros que nunca aconteceram. Às vezes, alguém ouve uma conversa segundos antes de ela começar.</p>
+        <p class="tsv-r tsv-name">Esses acontecimentos receberam um nome: <em>Descompassos.</em></p>
+        <p class="tsv-r">Para alguns, são manifestações inofensivas da magia. Para outros, consequências de antigas guerras ou interferências de forças que habitam além do mundo material. Existem aqueles que os consideram presságios e outros que simplesmente aprenderam a ignorá-los.</p>
+        <p class="tsv-r tsv-pull">Afinal, quando algo impossível acontece vezes suficientes, até o impossível se torna parte da rotina.</p>
+        <p class="tsv-r">Nas últimas semanas, relatos de Descompassos cada vez mais incomuns começaram a surgir em diferentes regiões de Runeterra. Pessoas desaparecem por alguns instantes e retornam sem perceber que estiveram ausentes. Acontecimentos são testemunhados antes de ocorrerem. Lugares familiares parecem diferentes por alguns segundos, como se algo tivesse sido alterado enquanto ninguém estava olhando.</p>
+        <p class="tsv-r"><em>E, em certos casos, o que deveria ter acontecido simplesmente não acontece.</em></p>
+        <p class="tsv-r">Não existe uma explicação oficial. Nenhuma região reivindica compreender o fenômeno. Estudiosos discordam entre si desde o início dos fenômenos, autoridades minimizam os relatos e a maioria das pessoas continua vivendo normalmente, convencida de que essas irregularidades logo desaparecerão.</p>
+        <p class="tsv-r tsv-maybe"><span>Talvez estejam certas.</span><span class="tsv-broken" data-dust=""><span class="tsv-broken-txt" data-dust-text="">Talvez não.</span></span></p>
+      </div>
+    </section>
+
+    <section class="tsv-part" aria-labelledby="tsv-h2">
+      <header class="tsv-head tsv-r">
+        <p class="tsv-kicker tsv-small">II</p>
+        <h2 class="tsv-h" id="tsv-h2">Sobre a campanha</h2>
+      </header>
+      <div class="tsv-text">
+        <ul class="tsv-facts tsv-r">
+          <li><span class="k tsv-small">Universo</span><span class="v">Runeterra</span></li>
+          <li><span class="k tsv-small">Sistema</span><span class="v">Runarcana, inspirado em D&amp;D 5ª Edição, com modificações próprias desde 2021</span></li>
+          <li><span class="k tsv-small">Foco</span><span class="v">Mistério, investigação, exploração e personagens</span></li>
+          <li><span class="k tsv-small">Tom</span><span class="v">Fantasia sombria, suspense psicológico, sobrenatural</span></li>
+        </ul>
+        <p class="tsv-r">The Seventh Veil é uma campanha de RPG ambientada no universo de Runeterra, utilizando o sistema Runarcana, inspirado em Dungeons &amp; Dragons 5ª Edição, mas com diversas modificações criadas por mim, Game Master, desde 2021.</p>
+        <p class="tsv-r">A aventura terá como foco o mistério, a investigação, a exploração e o desenvolvimento dos personagens, combinando fantasia sombria, suspense psicológico e acontecimentos sobrenaturais.</p>
+        <p class="tsv-r">Os jogadores poderão criar personagens originários de qualquer região de Runeterra, com diferentes motivações, histórias e objetivos. Suas decisões, relações e descobertas terão influência direta sobre os caminhos que a narrativa poderá seguir.</p>
+        <p class="tsv-r">Embora compartilhe o mesmo universo de Isle of Crows, The Seventh Veil foi concebida para funcionar como uma história independente. <span class="tsv-mark">Não é necessário conhecer a campanha original, seus personagens ou seus acontecimentos para participar.</span></p>
+        <p class="tsv-r tsv-pull">Acima de tudo, esta é uma história sobre curiosidade, escolhas e as consequências de buscar respostas para perguntas que talvez nunca devessem ter sido feitas.</p>
+      </div>
+    </section>
+
+    <section class="tsv-finale" aria-label="Materiais">
+      <p class="tsv-r tsv-f1">O tempo continua passando.</p>
+      <p class="tsv-r tsv-f2">Mas será que estamos prestando atenção?</p>
+
+      <a class="tsv-feature tsv-r" href="Regioes.dc.html">
+        <span class="tsv-feature-k tsv-small">Novo por aqui? Comece por aqui</span>
+        <span class="tsv-feature-t">Regiões de Runeterra</span>
+        <span class="tsv-feature-d">Conheça as terras de onde seu personagem pode vir: o que cada uma oferece, e o que cobra.</span>
+        <span class="tsv-feature-go tsv-small">Explorar as regiões &nbsp;&rarr;</span>
+      </a>
+
+      <div class="tsv-docs tsv-r">
+        <button type="button" class="tsv-link" onClick="{{ openClasses }}"><span class="t">Classes</span><span class="k tsv-small">PDF</span></button>
+        <button type="button" class="tsv-link" onClick="{{ openRulebook }}"><span class="t">Rulebook</span><span class="k tsv-small">PDF</span></button>
+      </div>
+
+      <div class="tsv-out tsv-r">
+        <img src="uploads/tsv-logo.png" width="731" height="199" alt="" loading="lazy" decoding="async">
+        <span class="tsv-small" style="color:rgba(236,228,216,0.6);">Em breve</span>
+        <a class="tsv-small" href="./">&larr;&nbsp; Voltar ao portal</a>
+      </div>
+    </section>
+  </div>
+
+  <sc-if value="{{ pdfOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="tsv-modal" onClick="{{ closePdf }}">
+      <div class="tsv-sheet" role="dialog" aria-modal="true" aria-label="{{ pdfTitle }}" onClick="{{ stop }}">
+        <div class="tsv-bar">
+          <span class="tsv-small" style="color:rgba(236,228,216,0.5);">The Seventh Veil</span>
+          <div class="tsv-bar-r">
+            <button type="button" class="tsv-x tsv-small" ref="{{ focusClose }}" onClick="{{ closePdf }}">Fechar</button>
+          </div>
+        </div>
+        <div class="tsv-doc">
+          <p class="tsv-doc-k tsv-small">Documento &middot; PDF</p>
+          <h2 class="tsv-doc-t">{{ pdfTitle }}</h2>
+          <sc-if value="{{ pdfUrl }}" hint-placeholder-val="{{ true }}">
+            <p class="tsv-doc-p">O documento abre no Google Drive, em uma nova aba.</p>
+            <a class="tsv-open tsv-small" href="{{ pdfUrl }}" target="_blank" rel="noopener noreferrer">Abrir o documento &nbsp;&rarr;</a>
+          </sc-if>
+          <sc-if value="{{ pdfMissing }}" hint-placeholder-val="{{ false }}">
+            <p class="tsv-doc-p">Este documento será disponibilizado em breve.</p>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <div class="tsv-vignette" aria-hidden="true"></div>
+  <div class="tsv-grain" aria-hidden="true"></div>
+</main>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;classesPdfUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://drive.google.com/file/d/1BAqTR1QoRhIEhPo9FMGfO5xz-FjsrTc0/view?usp=sharing&quot;,&quot;section&quot;:&quot;Documentos&quot;},&quot;regionsPdfUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;section&quot;:&quot;Documentos&quot;},&quot;rulebookPdfUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://drive.google.com/file/d/1hplGorsHXh5gPb7Fz_KXjP1ItlmTA9J4/view?usp=sharing&quot;,&quot;section&quot;:&quot;Documentos&quot;}}">
+class Component extends DCLogic {
+  state = { pdf: null };
+
+  // A Google Drive share link is turned into its embeddable preview.
+  embed(url) {
+    const m = /drive\.google\.com\/file\/d\/([^/?#]+)/.exec(url || '');
+    return m ? 'https://drive.google.com/file/d/' + m[1] + '/preview' : url;
+  }
+
+  // The links live here too: a Tweaks default only fills the panel, it does not reach the page.
+  // A value typed in the Tweaks panel still wins over these.
+  docs() {
+    const pick = (v, d) => ((v ?? '') + '').trim() || d;
+    return {
+      classes: { title: 'Classes', url: pick(this.props.classesPdfUrl, 'https://drive.google.com/file/d/1BAqTR1QoRhIEhPo9FMGfO5xz-FjsrTc0/view?usp=sharing') },
+      regions: { title: 'Regiões', url: pick(this.props.regionsPdfUrl, '') },
+      rulebook: { title: 'Rulebook', url: pick(this.props.rulebookPdfUrl, 'https://drive.google.com/file/d/1hplGorsHXh5gPb7Fz_KXjP1ItlmTA9J4/view?usp=sharing') },
+    };
+  }
+
+  open(key) {
+    this.lastFocus = document.activeElement;
+    this.setState({ pdf: key });
+    try { document.documentElement.style.overflow = 'hidden'; } catch (e) {}
+    window.addEventListener('keydown', this.onKey);
+  }
+
+  close = () => {
+    this.setState({ pdf: null });
+    try { document.documentElement.style.overflow = ''; } catch (e) {}
+    window.removeEventListener('keydown', this.onKey);
+    if (this.lastFocus && this.lastFocus.focus) this.lastFocus.focus();
+  };
+
+  onKey = (e) => { if (e.key === 'Escape') this.close(); };
+
+  setStage = (el) => {
+    if (this.unmountArt) { this.unmountArt(); this.unmountArt = null; }
+    if (el && window.TSVHourglass) this.unmountArt = window.TSVHourglass.mount(el.closest('.tsv-hero') || el.parentNode);
+  };
+
+  setStory = (el) => {
+    if (this.storyIO) { this.storyIO.disconnect(); this.storyIO = null; }
+    (this.dusts || []).forEach((u) => u()); this.dusts = [];
+    if (el && window.TSVDust) el.querySelectorAll('[data-dust]').forEach((n) => this.dusts.push(window.TSVDust.mount(n)));
+    if (!el || !window.IntersectionObserver) return;
+    el.classList.add('js-reveal');
+    this.storyIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('is-in'); this.storyIO && this.storyIO.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+    el.querySelectorAll('.tsv-r').forEach((n) => this.storyIO.observe(n));
+  };
+
+  focusClose = (el) => { if (el) setTimeout(() => el.focus(), 30); };
+  openClasses = () => this.open('classes');
+  openRegions = () => this.open('regions');
+  openRulebook = () => this.open('rulebook');
+  stop = (e) => e.stopPropagation();
+
+  componentWillUnmount() {
+    if (this.unmountArt) this.unmountArt();
+    if (this.storyIO) this.storyIO.disconnect();
+    (this.dusts || []).forEach((u) => u());
+    window.removeEventListener('keydown', this.onKey);
+  }
+
+  renderVals() {
+    const doc = this.state.pdf ? this.docs()[this.state.pdf] : null;
+    return {
+      setStage: this.setStage,
+      setStory: this.setStory,
+      openClasses: this.openClasses,
+      openRegions: this.openRegions,
+      openRulebook: this.openRulebook,
+      closePdf: this.close,
+      stop: this.stop,
+      focusClose: this.focusClose,
+      pdfOpen: !!doc,
+      pdfTitle: doc ? doc.title : '',
+      pdfUrl: doc && doc.url ? doc.url : '',
+      pdfEmbed: doc && doc.url ? this.embed(doc.url) : '',
+      pdfMissing: !!doc && !doc.url,
+    };
+  }
+}
+</script>
+</body>
+</html>

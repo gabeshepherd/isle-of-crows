@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regiões de Runeterra · The Seventh Veil</title>
+<script src="./regions-fx.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;background:#090609;}
+    .rp{position:relative;background:#090609;color:#ece4d8;font-family:'Cormorant Garamond',Georgia,serif;overflow:clip;}
+    .rp *{box-sizing:border-box;}
+    .rp-small{font-size:11px;font-weight:500;letter-spacing:0.4em;text-transform:uppercase;}
+    .rp-grain{position:fixed;inset:0;pointer-events:none;z-index:40;opacity:0.06;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.7 0 0 0 -0.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px 180px;}
+    .rp-back{position:fixed;top:clamp(22px,3.6vh,36px);left:clamp(22px,3vw,44px);z-index:30;color:rgba(236,228,216,0.6);text-decoration:none;padding:6px 0;transition:color .5s ease;}
+    .rp-back:hover,.rp-back:focus-visible{color:#f6f1e8;}
+    .rp a:focus-visible,.rp button:focus-visible{outline:1px solid rgba(236,228,216,0.55);outline-offset:6px;}
+
+    /* ——— opening ——— */
+    .rp-hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(22px,4vh,40px);padding:clamp(90px,14vh,140px) clamp(20px,5vw,72px) clamp(56px,8vh,90px);text-align:center;}
+    .rp-eyebrow{margin:0;color:rgba(236,228,216,0.5);animation:rpRise 1.6s ease .2s both;}
+    .rp-title{margin:0;font-weight:300;font-style:italic;font-size:clamp(52px,8vw,124px);line-height:0.95;color:#f6f1e8;animation:rpRise 1.8s ease .4s both;}
+    .rp-intro{margin:0;max-width:34em;font-size:clamp(18px,1.4vw,21px);line-height:1.7;font-style:italic;color:rgba(236,228,216,0.68);animation:rpRise 1.8s ease .7s both;}
+
+    .rp-map{position:relative;width:min(1240px,100%);margin-top:clamp(8px,2vh,20px);perspective:1600px;animation:rpFade 2.4s ease 1s both;}
+    .rp-map-in{position:relative;aspect-ratio:2000/1263;transition:transform 1.2s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d;}
+    .rp-map-img{position:absolute;inset:0;width:100%;height:100%;display:block;filter:saturate(0.78) brightness(0.86) contrast(1.04);-webkit-mask-image:radial-gradient(ellipse 72% 70% at 50% 50%, #000 62%, transparent 100%);mask-image:radial-gradient(ellipse 72% 70% at 50% 50%, #000 62%, transparent 100%);}
+    .rp-fog{position:absolute;inset:0;pointer-events:none;overflow:hidden;-webkit-mask-image:radial-gradient(ellipse 72% 70% at 50% 50%, #000 55%, transparent 100%);mask-image:radial-gradient(ellipse 72% 70% at 50% 50%, #000 55%, transparent 100%);}
+    .rp-fog::before,.rp-fog::after{content:"";position:absolute;inset:-20%;background:radial-gradient(ellipse 30% 18% at 30% 40%, rgba(240,236,228,0.16), transparent 70%), radial-gradient(ellipse 26% 14% at 70% 65%, rgba(240,236,228,0.12), transparent 70%), radial-gradient(ellipse 22% 12% at 55% 20%, rgba(240,236,228,0.1), transparent 70%);animation:rpFog 46s ease-in-out infinite alternate;}
+    .rp-fog::after{animation-duration:63s;animation-direction:alternate-reverse;opacity:0.7;}
+    .rp-pt{position:absolute;z-index:2;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:#f6f1e8;text-decoration:none;}
+    .rp-pt i{position:relative;display:block;width:12px;height:12px;border-radius:50%;background:#f6f1e8;border:2px solid rgba(20,14,12,0.7);box-shadow:0 0 0 1px rgba(246,241,232,0.5), 0 0 16px rgba(246,241,232,0.7);transition:transform .4s cubic-bezier(.2,.7,.2,1), background .4s ease;}
+    .rp-pt i::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:1.5px solid rgba(246,241,232,0.6);animation:rpPulse 2.8s ease-out infinite;animation-delay:var(--d,0s);}
+    .rp-pt .nm{padding:2px 9px;border-radius:2px;background:rgba(9,6,9,0.62);font-size:clamp(14px,1.3vw,18px);font-style:italic;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,0.8);transition:background .4s ease;}
+    .rp-pt .tip{position:absolute;top:calc(100% + 6px);left:50%;transform:translate(-50%,6px);display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 14px;min-width:190px;background:rgba(9,6,9,0.92);border:1px solid rgba(236,228,216,0.22);border-top:2px solid var(--tint);text-align:center;opacity:0;pointer-events:none;transition:opacity .35s ease, transform .35s ease;}
+    .rp-pt.tl .tip{left:auto;right:-10px;transform:translate(0,6px);}
+    .rp-pt .tip-e{font-size:10px;font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:var(--tint);white-space:nowrap;}
+    .rp-pt .tip-r{font-size:15px;font-style:italic;color:rgba(236,228,216,0.8);white-space:nowrap;}
+    .rp-pt .tip-n{font-size:12px;font-style:italic;color:rgba(236,228,216,0.5);}
+    .rp-pt .tip-n:empty{display:none;}
+    .rp-pt:hover,.rp-pt:focus-visible{z-index:5;}
+    .rp-pt:hover i,.rp-pt:focus-visible i{transform:scale(1.5);background:var(--tint);}
+    .rp-pt:hover .nm,.rp-pt:focus-visible .nm{background:rgba(9,6,9,0.9);}
+    .rp-pt:hover .tip,.rp-pt:focus-visible .tip{opacity:1;transform:translate(-50%,0);}
+    .rp-pt.tl:hover .tip,.rp-pt.tl:focus-visible .tip{transform:translate(0,0);}
+    .rp-pt.spirit i{background:transparent;border:1.5px dashed #f6f1e8;width:22px;height:22px;box-shadow:0 0 22px rgba(246,241,232,0.5);animation:rpSpin 9s linear infinite;}
+    .rp-note{margin:0;font-size:14px;font-style:italic;color:rgba(236,228,216,0.42);animation:rpFade 2s ease 2.2s both;}
+    .rp-cue{display:flex;flex-direction:column;align-items:center;gap:12px;color:rgba(236,228,216,0.5);text-decoration:none;animation:rpFade 2s ease 2.6s both;}
+    .rp-cue::after{content:"";width:1px;height:44px;background:linear-gradient(180deg, rgba(236,228,216,0.6), transparent);animation:rpCue 2.6s ease-in-out infinite;}
+
+    /* ——— index ——— */
+    .rp-index{position:fixed;right:clamp(16px,2vw,32px);top:50%;transform:translateY(-50%);z-index:25;display:flex;flex-direction:column;gap:2px;margin:0;padding:0;list-style:none;opacity:0;pointer-events:none;transition:opacity .8s ease;}
+    .rp-index.is-on{opacity:1;pointer-events:auto;}
+    .rp-index a{position:relative;display:flex;align-items:center;justify-content:flex-end;width:28px;height:22px;color:rgba(236,228,216,0.4);text-decoration:none;font-size:0;}
+    .rp-index a::after{content:"";width:6px;height:6px;border-radius:50%;border:1px solid currentColor;transition:transform .5s ease, background .5s ease;}
+    .rp-index a .lb{position:absolute;right:22px;white-space:nowrap;font-size:10px;font-weight:500;letter-spacing:0.32em;text-transform:uppercase;opacity:0;transform:translateX(6px);transition:opacity .4s ease, transform .4s ease;pointer-events:none;}
+    .rp-index a:hover,.rp-index a:focus-visible{color:rgba(236,228,216,0.9);}
+    .rp-index a:hover .lb,.rp-index a:focus-visible .lb,.rp-index a.is-active .lb{opacity:1;transform:none;}
+    .rp-index a.is-active{color:#f6f1e8;}
+    .rp-index a.is-active::after{background:#f6f1e8;transform:scale(1.25);}
+
+    /* ——— a region ——— */
+    .rg{position:relative;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);grid-template-areas:"body vis";border-top:1px solid rgba(236,228,216,0.08);}
+    .rg-vis{grid-area:vis;position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;}
+    .rg-rep{position:absolute;left:clamp(16px,3vw,48px);bottom:clamp(40px,7vh,72px);z-index:3;display:flex;align-items:flex-end;gap:20px;}
+    .rg-rep-frame{position:relative;flex:0 0 auto;width:150px;height:198px;border-radius:60px 60px 4px 4px;overflow:hidden;border:1px solid rgba(236,228,216,0.28);background:radial-gradient(ellipse 80% 70% at 50% 30%, color-mix(in srgb, var(--tint) 30%, transparent), rgba(9,6,9,0.85) 75%);box-shadow:0 20px 50px -20px rgba(0,0,0,0.9), inset 0 0 30px rgba(0,0,0,0.6);}
+    .rg-rep-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;z-index:1;filter:saturate(0.9) contrast(1.03);transition:transform 1.2s cubic-bezier(.2,.7,.2,1);}
+    .rg-rep-frame::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(0deg, rgba(9,6,9,0.75) 0%, rgba(9,6,9,0) 38%), radial-gradient(ellipse 90% 80% at 50% 35%, transparent 55%, rgba(9,6,9,0.45) 100%);box-shadow:inset 0 0 0 1px rgba(236,228,216,0.12);border-radius:inherit;}
+    .rg-rep:hover .rg-rep-frame img{transform:scale(1.06);}
+    .rg-rep-x{margin-left:10px;font-size:0.62em;font-style:normal;vertical-align:0.35em;color:#d99a8e;}
+    .rg-rep-mono{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:72px;font-style:italic;font-weight:300;color:#f6f1e8;opacity:0.85;}
+    .rg-rep-txt{max-width:17em;padding-bottom:4px;text-shadow:0 2px 18px rgba(0,0,0,0.9);}
+    .rg-rep-txt p{margin:0;}
+    .rg-rep-k{color:var(--tint);font-size:9.5px;letter-spacing:0.34em;}
+    .rg-rep-n{margin-top:6px !important;font-size:34px;line-height:1;font-style:italic;color:#f6f1e8;}
+    .rg-rep-t{margin-top:4px !important;font-size:17px;font-style:italic;color:rgba(236,228,216,0.72);}
+    .rg-rep-w{margin-top:10px !important;font-size:15.5px;line-height:1.45;color:rgba(236,228,216,0.6);}
+    .rg-fx{position:absolute;inset:0;width:100%;height:100%;display:block;}
+    .rg-vis::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg, #090609 0%, rgba(9,6,9,0) 38%), linear-gradient(0deg, #090609 0%, rgba(9,6,9,0) 22%), linear-gradient(180deg, #090609 0%, rgba(9,6,9,0) 18%);}
+    .rg-art{position:absolute;z-index:2;left:7%;right:7%;top:clamp(70px,11vh,110px);display:block;padding:0;border:0;background:none;cursor:zoom-in;}
+    .rg-art img{display:block;width:100%;height:auto;max-height:48vh;max-height:48svh;object-fit:cover;-webkit-mask-image:linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%), linear-gradient(180deg, transparent 0, #000 10%, #000 84%, transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%), linear-gradient(180deg, transparent 0, #000 10%, #000 84%, transparent 100%);mask-composite:intersect;filter:saturate(0.92) brightness(0.92);transition:filter .8s ease, transform 1.4s cubic-bezier(.2,.7,.2,1);}
+    .rg-art:hover img,.rg-art:focus-visible img{filter:none;transform:scale(1.02);}
+    .rg-art-zoom{position:absolute;right:11%;bottom:14%;padding:6px 10px;background:rgba(9,6,9,0.7);color:rgba(236,228,216,0.85);opacity:0;transition:opacity .5s ease;}
+    .rg-art:hover .rg-art-zoom,.rg-art:focus-visible .rg-art-zoom{opacity:1;}
+    .rp-lb{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:clamp(16px,4vw,56px);background:rgba(4,3,4,0.94);cursor:zoom-out;animation:rpFade .4s ease both;}
+    .rp-lb-fig{margin:0;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:min(1600px,100%);}
+    .rp-lb-fig img{display:block;max-width:100%;max-height:82vh;max-height:82svh;object-fit:contain;box-shadow:0 30px 90px rgba(0,0,0,0.8);}
+    .rp-lb-fig figcaption{display:flex;align-items:baseline;gap:16px;}
+    .rp-lb-n{font-size:28px;font-style:italic;color:#f6f1e8;}
+    .rp-lb-e{color:rgba(236,228,216,0.55);}
+    .rp-lb-x{position:absolute;top:20px;right:24px;padding:8px 14px;background:transparent;border:1px solid rgba(236,228,216,0.3);color:#ece4d8;font-family:inherit;cursor:pointer;}
+    .rg-ghost{position:absolute;right:-0.06em;bottom:0.02em;z-index:0;margin:0;font-size:clamp(120px,15vw,250px);line-height:0.8;font-weight:300;font-style:italic;color:var(--tint);opacity:0.07;white-space:nowrap;pointer-events:none;}
+    .rg-body{grid-area:body;padding:clamp(110px,16vh,170px) clamp(24px,4vw,64px) clamp(90px,14vh,150px) clamp(24px,7vw,120px);}
+    .rg-num{margin:0;color:rgba(236,228,216,0.45);}
+    .rg-name{margin:14px 0 0;font-weight:300;font-style:italic;font-size:clamp(60px,7.4vw,118px);line-height:0.92;color:#f6f1e8;}
+    .rg-epi{margin:18px 0 0;display:flex;align-items:center;gap:14px;color:var(--tint);}
+    .rg-epi::before{content:"";width:34px;height:1px;background:currentColor;opacity:0.7;}
+    .rg-lore{max-width:33em;margin-top:clamp(36px,6vh,56px);font-size:clamp(18.5px,1.3vw,21px);line-height:1.75;color:rgba(236,228,216,0.74);}
+    .rg-lore p{margin:0 0 1.2em;text-wrap:pretty;}
+    .rg-lore p:first-child{font-size:1.18em;line-height:1.6;color:rgba(236,228,216,0.9);}
+    .rg-lore p:first-child::first-letter{float:left;font-size:3.4em;line-height:0.86;padding:0.06em 0.12em 0 0;font-style:italic;color:var(--tint);}
+
+    .rg-h3{margin:clamp(48px,8vh,72px) 0 18px;display:flex;align-items:center;gap:16px;color:rgba(236,228,216,0.55);}
+    .rg-h3::after{content:"";flex:1;height:1px;background:rgba(236,228,216,0.12);}
+    .rg-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0;padding:0;list-style:none;max-width:40em;}
+    .rg-stat{display:flex;align-items:baseline;gap:12px;padding:14px 16px;border:1px solid rgba(236,228,216,0.1);background:rgba(236,228,216,0.02);transition:border-color .5s ease, background .5s ease;}
+    .rg-stat:hover{border-color:rgba(236,228,216,0.28);background:rgba(236,228,216,0.04);}
+    .rg-g{flex:0 0 auto;font-size:16px;font-style:normal;color:var(--tint);}
+    .rg-stat.down .rg-g{color:#d99a8e;}
+    .rg-k{display:block;margin-bottom:3px;color:rgba(236,228,216,0.45);font-size:9.5px;letter-spacing:0.3em;}
+    .rg-v{display:block;font-size:19px;line-height:1.3;color:#f1ebe2;}
+
+    .rg-traits{display:flex;flex-direction:column;gap:12px;max-width:40em;}
+    .rg-trait{position:relative;padding:20px 22px 20px 24px;border:1px solid rgba(236,228,216,0.1);background:linear-gradient(90deg, rgba(236,228,216,0.035), rgba(236,228,216,0.01));transition:border-color .6s ease, transform .6s cubic-bezier(.2,.7,.2,1);}
+    .rg-trait::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--tint);opacity:0.55;}
+    .rg-trait:hover{border-color:rgba(236,228,216,0.26);transform:translateX(4px);}
+    .rg-trait.burden{border-style:dashed;border-color:rgba(217,154,142,0.3);background:linear-gradient(90deg, rgba(217,154,142,0.05), rgba(217,154,142,0.01));}
+    .rg-trait.burden::before{background:#d99a8e;}
+    .rg-tag{margin:0 0 8px;color:rgba(236,228,216,0.45);font-size:9.5px;letter-spacing:0.32em;}
+    .rg-trait.burden .rg-tag{color:#d99a8e;}
+    .rg-trait h4{margin:0 0 6px;font-size:23px;font-weight:500;line-height:1.2;color:#f6f1e8;}
+    .rg-trait p.tx{margin:0;font-size:18px;line-height:1.6;color:rgba(236,228,216,0.74);}
+    .rg-coda{margin:22px 0 0;font-size:22px;font-style:italic;color:var(--tint);}
+
+    /* ——— overview ——— */
+    .rp-over{padding:clamp(100px,16vh,170px) clamp(20px,6vw,96px) clamp(80px,12vh,120px);border-top:1px solid rgba(236,228,216,0.08);}
+    .rp-over h2{margin:0;text-align:center;font-weight:300;font-style:italic;font-size:clamp(44px,5vw,72px);color:#f6f1e8;}
+    .rp-over > p{margin:14px auto 0;text-align:center;max-width:32em;font-size:19px;font-style:italic;color:rgba(236,228,216,0.6);}
+    .rp-tw{margin:clamp(40px,7vh,64px) auto 0;max-width:1100px;overflow-x:auto;}
+    .rp-tbl{min-width:760px;font-size:18px;}
+    .rp-row{display:grid;grid-template-columns:1.3fr 0.8fr 1.5fr 1.3fr 1.3fr;align-items:baseline;border-bottom:1px solid rgba(236,228,216,0.08);transition:background .4s ease;}
+    .rp-row > span{padding:14px;color:rgba(236,228,216,0.78);}
+    .rp-row:not(.rp-th):hover{background:rgba(236,228,216,0.03);}
+    .rp-th{border-bottom-color:rgba(236,228,216,0.18);}
+    .rp-th > span{padding:12px 14px;font-size:10px;font-weight:500;letter-spacing:0.3em;text-transform:uppercase;color:rgba(236,228,216,0.5);}
+    .rp-row > span:first-child a{font-size:22px;font-style:italic;color:#f6f1e8;text-decoration:none;}
+    .rp-row > span:first-child a:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;}
+    .rp-tbl .dn{color:#d99a8e !important;}
+    .rp-end{display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:clamp(70px,11vh,110px);text-align:center;}
+    .rp-end p{margin:0;font-size:clamp(26px,2.6vw,38px);font-style:italic;font-weight:300;color:#f1ebe2;max-width:18em;}
+    .rp-end a{color:rgba(236,228,216,0.55);text-decoration:none;padding:8px 0;transition:color .5s ease;}
+    .rp-end a:hover{color:#f6f1e8;}
+
+    /* reveal */
+    .js-reveal .rp-r{opacity:0;transform:translateY(18px);transition:opacity 1.4s cubic-bezier(.2,.6,.2,1), transform 1.4s cubic-bezier(.2,.6,.2,1);}
+    .js-reveal .rp-r.is-in{opacity:1;transform:none;}
+
+    @keyframes rpRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    @keyframes rpFade{from{opacity:0}to{opacity:1}}
+    @keyframes rpDraw{to{stroke-dashoffset:0}}
+    @keyframes rpPulse{0%{transform:scale(0.6);opacity:0.9}100%{transform:scale(2.4);opacity:0}}
+    @keyframes rpFog{from{transform:translate(-4%,1%)}to{transform:translate(5%,-2%)}}
+    @keyframes rpSpin{to{transform:rotate(360deg)}}
+    @keyframes rpCue{0%,100%{transform:scaleY(0.4);transform-origin:top;opacity:0.4}50%{transform:scaleY(1);opacity:1}}
+
+    @media (max-width: 1180px){ .rp-index{display:none;} }
+    @media (max-width: 880px){
+      .rp-back{position:absolute;}
+      .rp-map{width:calc(100% + 40px);margin-left:-20px;margin-right:-20px;}
+      .rp-pt .nm{font-size:11px;padding:1px 5px;}
+      .rp-pt i{width:9px;height:9px;}
+      .rp-pt .tip{display:none;}
+      .rg{grid-template-columns:1fr;grid-template-areas:"vis" "body";}
+      .rg-vis{position:relative;height:52vh;height:52svh;}
+      .rg-rep{left:22px;right:22px;bottom:18px;}
+      .rg-rep-frame{width:104px;height:138px;}
+      .rg-art{top:56px;left:4%;right:4%;}
+      .rg-art img{max-height:30vh;max-height:30svh;}
+      .rg-rep-mono{font-size:56px;}
+      .rg-rep-n{font-size:28px;}
+      .rg-vis::before{background:linear-gradient(0deg, #090609 0%, rgba(9,6,9,0) 45%), linear-gradient(180deg, #090609 0%, rgba(9,6,9,0) 20%);}
+      .rg-body{padding:28px 22px 80px;position:relative;z-index:2;}
+      .rg-stats{grid-template-columns:1fr;}
+    }
+    @media (prefers-reduced-motion: reduce){
+      .rp-eyebrow,.rp-title,.rp-intro,.rp-map,.rp-note,.rp-cue,.rp-cue::after,.rp-pt i::after,.rp-fog::before,.rp-fog::after,.rp-pt.spirit i{animation:none !important;}
+      .rp-map-in{transition:none;}
+      .js-reveal .rp-r{opacity:1 !important;transform:none !important;transition:none !important;}
+    }
+  </style>
+</helmet>
+
+<main class="rp" ref="{{ setRoot }}">
+  <a class="rp-back rp-small" href="The Seventh Veil.dc.html">&larr;&nbsp; The Seventh Veil</a>
+
+  <section class="rp-hero" aria-labelledby="rp-t">
+    <p class="rp-eyebrow rp-small">The Seventh Veil &middot; Guia do jogador</p>
+    <h1 class="rp-title" id="rp-t">Regiões de Runeterra</h1>
+    <p class="rp-intro">Todo personagem vem de algum lugar. Antes de escolher o seu, conheça as terras de Runeterra: no que acreditam, o que oferecem e o que cobram de quem nasce nelas.</p>
+
+    <nav class="rp-map" aria-label="Mapa de Runeterra" onMouseMove="{{ tiltMap }}" onMouseLeave="{{ resetMap }}">
+      <div class="rp-map-in">
+        <img class="rp-map-img" src="uploads/runeterra-map.webp" width="2000" height="1263" alt="Mapa de Runeterra">
+        <div class="rp-fog" aria-hidden="true"></div>
+        <sc-for list="{{ atlas }}" as="p" hint-placeholder-count="12">
+          <a class="{{ p.cls }}" href="{{ p.href }}" style="{{ p.pos }}">
+            <i></i><span class="nm">{{ p.name }}</span>
+            <span class="tip"><span class="tip-e">{{ p.epithet }}</span><span class="tip-r">{{ p.rep }}</span><span class="tip-n">{{ p.note }}</span></span>
+          </a>
+        </sc-for>
+      </div>
+    </nav>
+    <p class="rp-note">Explore o mapa e escolha uma região para viajar até ela.</p>
+    <a class="rp-cue rp-small" href="#demacia">Comece a jornada</a>
+  </section>
+
+  <ul class="{{ indexCls }}" aria-label="Índice das regiões">
+    <sc-for list="{{ index }}" as="ix" hint-placeholder-count="10">
+      <li><a class="{{ ix.cls }}" href="{{ ix.href }}" aria-label="{{ ix.name }}"><span class="lb">{{ ix.name }}</span></a></li>
+    </sc-for>
+  </ul>
+
+  <sc-for list="{{ regions }}" as="r" hint-placeholder-count="2">
+    <section class="rg" id="{{ r.id }}" style="{{ r.vars }}" aria-labelledby="{{ r.hid }}" data-region="{{ r.id }}">
+      <div class="rg-vis">
+        <canvas class="rg-fx" data-fx="{{ r.id }}" aria-hidden="true"></canvas>
+        <p class="rg-ghost" aria-hidden="true">{{ r.name }}</p>
+        <button type="button" class="rg-art" onClick="{{ r.openArt }}" aria-label="Ampliar ilustração de {{ r.name }}">
+          <img src="{{ r.art }}" alt="{{ r.artAlt }}" loading="lazy" decoding="async">
+          <span class="rg-art-zoom rp-small" aria-hidden="true">Ampliar</span>
+        </button>
+      <aside class="rg-rep" aria-label="Representante">
+        <div class="rg-rep-frame" aria-hidden="true">
+          <sc-if value="{{ r.repImg }}" hint-placeholder-val="{{ false }}"><img src="{{ r.repImg }}" alt="" loading="lazy"></sc-if>
+          <span class="rg-rep-mono">{{ r.repInitial }}</span>
+        </div>
+        <div class="rg-rep-txt">
+          <p class="rg-rep-k rp-small">Representante</p>
+          <p class="rg-rep-n">{{ r.rep }}<sc-if value="{{ r.repDead }}" hint-placeholder-val="{{ false }}"><span class="rg-rep-x" title="Morreu na campanha" aria-label="(morreu na campanha)">&dagger;</span></sc-if></p>
+          <p class="rg-rep-t">{{ r.repTitle }}</p>
+          <p class="rg-rep-w">{{ r.repWhy }}</p>
+        </div>
+      </aside>
+      </div>
+      <div class="rg-body">
+        <p class="rg-num rp-small rp-r">{{ r.num }} &nbsp;/&nbsp; 12</p>
+        <h2 class="rg-name rp-r" id="{{ r.hid }}">{{ r.name }}</h2>
+        <p class="rg-epi rp-small rp-r">{{ r.epithet }}</p>
+        <div class="rg-lore">
+          <p class="rp-r">{{ r.p1 }}</p>
+          <p class="rp-r">{{ r.p2 }}</p>
+        </div>
+
+        <h3 class="rg-h3 rp-small rp-r">Herança</h3>
+        <ul class="rg-stats rp-r">
+          <sc-for list="{{ r.stats }}" as="s" hint-placeholder-count="4">
+            <li class="{{ s.cls }}"><span class="rg-g" aria-hidden="true">{{ s.g }}</span><span><span class="rg-k rp-small">{{ s.k }}</span><span class="rg-v">{{ s.v }}</span></span></li>
+          </sc-for>
+        </ul>
+
+        <h3 class="rg-h3 rp-small rp-r">Traços</h3>
+        <div class="rg-traits">
+          <sc-for list="{{ r.traits }}" as="tr" hint-placeholder-count="5">
+            <article class="{{ tr.cls }}">
+              <p class="rg-tag rp-small">{{ tr.tag }}</p>
+              <h4>{{ tr.name }}</h4>
+              <p class="tx">{{ tr.text }}</p>
+            </article>
+          </sc-for>
+        </div>
+        <sc-if value="{{ r.coda }}" hint-placeholder-val="{{ false }}">
+          <p class="rg-coda rp-r">{{ r.coda }}</p>
+        </sc-if>
+      </div>
+    </section>
+  </sc-for>
+
+  <section class="rp-over" aria-labelledby="rp-ov">
+    <h2 id="rp-ov" class="rp-r">Lado a lado</h2>
+    <p class="rp-r">Um resumo de cada herança, para comparar antes de decidir.</p>
+    <div class="rp-tw rp-r">
+      <div class="rp-tbl" role="table" aria-label="Resumo das heranças">
+        <div class="rp-row rp-th" role="row"><span role="columnheader">Região</span><span role="columnheader">Atributo</span><span role="columnheader">Perícia</span><span role="columnheader">Resistência</span><span role="columnheader">Vulnerabilidade</span></div>
+        <sc-for list="{{ regions }}" as="o" hint-placeholder-count="10">
+          <div class="rp-row" role="row"><span role="cell"><a href="{{ o.href }}">{{ o.name }}</a></span><span role="cell">{{ o.attr }}</span><span role="cell">{{ o.skill }}</span><span role="cell">{{ o.res }}</span><span role="cell" class="dn">{{ o.vul }}</span></div>
+        </sc-for>
+      </div>
+    </div>
+    <div class="rp-end rp-r">
+      <p>Agora que você conhece o mundo, de onde vem o seu personagem?</p>
+      <a class="rp-small" href="The Seventh Veil.dc.html">&larr;&nbsp; Voltar para The Seventh Veil</a>
+    </div>
+  </section>
+
+  <sc-if value="{{ artOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="rp-lb" onClick="{{ closeArt }}" role="dialog" aria-modal="true" aria-label="{{ artTitle }}">
+      <figure class="rp-lb-fig">
+        <img src="{{ artSrc }}" alt="{{ artTitle }}">
+        <figcaption><span class="rp-lb-n">{{ artName }}</span><span class="rp-lb-e rp-small">{{ artEpithet }}</span></figcaption>
+      </figure>
+      <button type="button" class="rp-lb-x rp-small" ref="{{ focusEl }}" onClick="{{ closeArt }}">Fechar</button>
+    </div>
+  </sc-if>
+
+  <div class="rp-grain" aria-hidden="true"></div>
+</main>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  state = { active: null, art: null };
+
+  // Lore descriptions are written for this campaign; heritage and traits are the campaign's own rules.
+  data = [
+    { id: 'demacia', name: 'Demacia', epithet: 'O Reino da Honra', tint: '226,216,190', at: [20.7, 40.2],
+      rep: ['Garen', 'o Poder de Demacia', 'Soldado exemplar da Vanguarda Destemida e a própria imagem dos ideais do reino.'], repImg: 'uploads/reps/garen.webp',
+      p1: 'Demacia é um reino orgulhoso, erguido sobre ideais de justiça, honra e dever. Suas muralhas brancas e seus exércitos disciplinados guardam o oeste de Valoran, e cada demaciano cresce aprendendo que servir ao reino é a maior das virtudes.',
+      p2: 'Mas toda luz projeta uma sombra. Demacia desconfia profundamente da magia e a cerca de leis rígidas e de petricita, uma pedra capaz de anulá-la. Para quem nasce com dons arcanos, o reino da justiça também pode ser uma prisão.',
+      attr: '+1 CEL', skill: 'Sobrevivência (CLA)', res: ['Psíquico'], vul: ['Esmagamento'],
+      traits: [
+        ['Resiliência no Sangue', 'Você possui vantagem em testes de resistência contra magias que envolvam AP.'],
+        ['Tática de Matilha', 'Você tem vantagem nas jogadas de ataque contra uma criatura se ao menos um de seus aliados está a 1,5 m da criatura e se o aliado não está incapacitado.'],
+        ['Treinamento Demaciano', 'Você possui proficiência com rapieiras, espadas curtas e bestas de mão.'],
+        ['Costume Real', 'Demacianos não são exatamente conhecidos por carregarem peso. Você é considerado como de uma categoria de tamanho menor para determinar sua capacidade de carga.', true],
+        ['Counter', 'Imediatamente após uma criatura a 1,5 m de você lhe causar dano, você pode usar sua reação para fazer um ataque desarmado com seus pés. Se acertar, você causa dano de esmagamento igual a 1d6 + seu modificador de AD. Você só pode usar Counter novamente após um longo descanso.']
+      ] },
+    { id: 'freljord', name: 'Freljord', epithet: 'A Terra Implacável', tint: '184,214,230', at: [26, 27.7],
+      rep: ['Ashe', 'a Arqueira do Gelo', 'Rainha guerreira que sonha em unir as tribos do norte sob uma só bandeira.'], repImg: 'uploads/reps/ashe.webp',
+      p1: 'No extremo norte, o Freljord é uma terra de gelo, montanhas e invernos que parecem não ter fim. Ali, sobreviver é a primeira lição de qualquer criança, e a força se prova contra o frio antes de se provar contra qualquer inimigo.',
+      p2: 'Suas tribos guerreiras disputam território, recursos e fé, divididas entre lendas antigas e promessas de união. Sob o gelo, dizem, dormem segredos mais velhos do que qualquer reino de Runeterra.',
+      attr: '+1 TEN', skill: 'Lidar com Animais (CLA)', res: ['Gelo'], vul: ['Fogo'],
+      traits: [
+        ['Armas de Caça', 'Você adquire proficiência com arcos curtos, arcos longos e javelins.'],
+        ['Resistência Implacável', 'Quando você é reduzido a EXATAMENTE 0 (zero) pontos de vida mas não é completamente morto, você pode voltar para 1 ponto de vida. Você não pode usar essa característica novamente até completar um descanso longo.'],
+        ['Carnívoro', 'Alguns de seus costumes são estranhos. Diferente de outras regiões, você pode comer carne crua para saciar a fome, porém realiza um teste de salvaguarda (saving throw) de Tenacidade DC15. Caso passe no teste de salvaguarda, você sacia sua fome e recebe HP temporário igual ao seu nível. Ao falhar, você joga 1d6. Em 1, 2, 3 e 4, você fica envenenado.', true],
+        ['Linha de Sangue Freljordiana · Truque', 'Você conhece o truque (ou cantrip) Picada Congelante (Frostbite). Seu atributo de conjuração para esta magia é Clareza.'],
+        ['Pele Grossa', 'Você tem resistência a dano de Esmagamento causado por quedas.']
+      ] },
+    { id: 'noxus', name: 'Noxus', epithet: 'O Império de Ferro', tint: '232,168,150', at: [44.7, 41.2],
+      rep: ['Samira', 'a Rosa do Deserto', 'Mercenária vinda de Shurima que encontrou em Noxus o palco perfeito para a sua coragem e o seu estilo.'], repImg: 'uploads/reps/samira.webp',
+      p1: 'Noxus é o império mais temido de Runeterra: uma potência que cresce conquistando e que mede cada pessoa pelo que ela é capaz de fazer. Berço, riqueza e origem pesam pouco aqui. O que importa é a força, seja ela lâmina, astúcia, magia ou pura vontade.',
+      p2: 'O império absorve os povos que derrota e oferece a qualquer um a chance de subir, do soldado raso ao conselho que governa a capital. O preço é simples e cruel: provar, todos os dias, que você merece o lugar que ocupa.',
+      attr: '+1 AD', skill: 'Intimidação (CLA)', res: ['Cortante'], vul: ['Veneno'],
+      traits: [
+        ['Golpe Noxiano', 'Após reduzir um inimigo a 0 pontos de vida, seu próximo ataque com uma arma corpo a corpo dará 1d6 a mais de dano. Você pode usar essa característica 1 vez por descanso longo.'],
+        ['Compleição Poderosa', 'Você é considerado como de uma categoria de tamanho maior para determinar sua capacidade de carga e o peso que você pode empurrar, arrastar ou erguer.'],
+        ['Agressivo', 'Como uma ação bônus, você pode se mover até o máximo de deslocamento em direção a um inimigo de sua escolha que você pode ver ou ouvir. Você precisa terminar este movimento mais próximo do inimigo.'],
+        ['Treinamento Cascudo', 'Você possui proficiência em armaduras médias e pesadas.'],
+        ['Hematofobia', 'Caso receba dano físico cortante ou perfurante acima de 5, ele fará com que você sangre. Você, então, entra em estado de choque e recebe desvantagem em ability checks ou saving throws até não poder mais vê-lo. Curiosamente, esse problema só existe com seu próprio sangue, não dos outros.', true]
+      ] },
+    { id: 'ionia', name: 'Ionia', epithet: 'As Primeiras Terras', tint: '238,206,214', at: [61.8, 24.3],
+      rep: ['Irelia', 'a Dançarina das Lâminas', 'Transformou a dança tradicional ioniana em arte de guerra para defender a própria terra.'], repImg: 'uploads/reps/irelia.webp',
+      p1: 'Um arquipélago de beleza indomada, onde a magia corre pela própria terra e a fronteira com o reino espiritual é mais fina do que em qualquer outro lugar. Florestas que parecem respirar, templos no alto das montanhas, espíritos que caminham entre os vivos.',
+      p2: 'Os ionianos buscam o equilíbrio: entre si, com a natureza e com aquilo que não se vê. Mas a invasão noxiana deixou cicatrizes, e hoje cada província entende à sua maneira o que significa proteger a harmonia, seja pela meditação, pela tradição ou pela lâmina.',
+      attr: '+1 CLA', skill: 'Arcana (AP)', res: ['Energia'], vul: ['Necrótico'],
+      traits: [
+        ['Treinamento Marcial', 'Você possui proficiência em 2 armas marciais e armaduras leves.'],
+        ['Resiliência Ioniana', 'Você possui vantagem nos testes de resistência contra ilusões, e contra ser enfeitiçado ou paralisado.'],
+        ['Portador da Luz · Truque', 'Você conhece o truque (ou cantrip) Luz (Light). Clareza é o atributo usado para conjurar este truque. É necessário ao menos um dos componentes descritos para utilizá-la.'],
+        ['Transe', 'Você não precisa dormir, já que está acostumado com a arte da meditação. Ao invés de dormir, você medita profundamente, permanecendo semiconsciente. Após descansar assim, você recebe os mesmos benefícios que outro ser humano recebe ao dormir 8 horas de sono.'],
+        ['Vegetariano', 'Você só pode comer plantas ou comidas à base de plantas. Se você comer carne, você deve fazer um teste de salvaguarda (saving throw) de Tenacidade DC15. Caso falhe, você toma 2d6 de dano de veneno e tem desvantagem em rolagens AD e AP.', true]
+      ] },
+    { id: 'piltover', name: 'Piltover', epithet: 'A Cidade do Progresso', tint: '232,212,172', at: [48.6, 49.2],
+      rep: ['Caitlyn', 'a Xerife de Piltover', 'A guardiã da lei mais célebre da Cidade do Progresso.'], repImg: 'uploads/reps/caitlyn.webp',
+      p1: 'Erguida sobre penhascos à beira do oceano, Piltover é o grande centro de comércio, arte e invenção de Valoran: uma cidade de academias, oficinas e torres que mudam de forma a cada estação. Foi aqui que nasceu a hextec, a união entre magia e engenharia.',
+      p2: 'Piltover acredita que todo problema tem solução, desde que haja inteligência, dinheiro e ousadia suficientes. Os clãs mercantes governam, os inventores sonham alto, e sob o brilho das ruas existe uma cidade inteira pagando o preço desse progresso.',
+      attr: '+1 TEN', skill: 'Atletismo (AD)', res: ['Elétrico'], vul: ['Veneno'],
+      traits: [
+        ['Disciplina Mental', 'Você possui vantagem em rolagem de dano psíquico e em rolls do status enfeitiçado.'],
+        ['Oportunidade Certeira · Truque', 'Você conhece o truque (ou cantrip) Ataque Certeiro (True Strike).'],
+        ['Treinamento Bélico de Piltover', 'Você é proficiente com armaduras médias, arcos longos e armas ???'],
+        ['Artesão', 'A sociedade evoluída de Piltover e sua natureza investigativa lhe deu proficiência na Ferramenta Artesã de Kit de Disfarce.'],
+        ['Topo da Cadeia Alimentar', 'Você não é acostumado a comer qualquer coisa. Caso coma alguma coisa considerada de baixa gastronomia, jogue 1d4. Em 1 e 2, você passa mal e tem desvantagens em attack rolls, saving throws e ability checks de Tenacidade (TEN).', true]
+      ] },
+    { id: 'zaun', name: 'Zaun', epithet: 'A Cidade Subterrânea', tint: '168,212,182', at: [50.4, 54.2],
+      rep: ['Jinx', 'a Bala Perdida', 'Caos em forma de gente, nascida e criada nas ruas de Zaun.'], repImg: 'uploads/reps/jinx.webp',
+      p1: 'Nos cânions e fendas abaixo de Piltover vive Zaun, a cidade gêmea que o tempo transformou em reflexo sombrio. Fumaça química, canos que nunca silenciam, luz de neon atravessando a névoa: um lugar de pobreza e crime, mas também de uma criatividade brutal.',
+      p2: 'Em Zaun, sobreviver é aprender a improvisar. Químicos, mecânicos, fugitivos e sonhadores constroem o próprio futuro com o que sobra lá de cima, e não pedem licença a ninguém para isso.',
+      attr: '+1 TEN', skill: 'Acrobacia (CEL)', res: ['Ácido'], vul: ['Elétrico'],
+      traits: [
+        ['Reflexos Rápidos', 'Você pode adicionar metade do seu bônus de proficiência, arredondado para baixo, às suas rolagens de iniciativa.'],
+        ['Afinidade Ácida · Truque', 'Você conhece o truque (ou cantrip) Espirro Ácido (Acid Splash). AP é o atributo usado para conjurar este truque.'],
+        ['Nada Sutil', 'Dizem em Runeterra que Zaunitas têm um cheiro característico por conta das toxinas emitidas na cidade. O odor não é fedido e nada insuportável, mas ainda assim faz com que você tenha desvantagem em rolagens de Furtividade (CLA) e Persuasão (CLA).', true],
+        ['Dieta Venenosa', 'Acostumados a comerem poucas coisas e em ambientes insalubres, seu corpo conhece bem algumas toxinas. Você tem resistência a ficar envenenado, mas não a dano de veneno.'],
+        ['Treinamento Zaunita', 'Você é proficiente com lanças, dardos, machadinhas e zarabatanas.']
+      ] },
+    { id: 'bilgewater', name: 'Bilgewater', epithet: 'O Porto da Chama Azul', tint: '168,206,212', at: [63.7, 57.4],
+      rep: ['Miss Fortune', 'a Caçadora de Recompensas', 'Capitã que conquistou o porto com charme, pólvora e uma vingança paciente.'], repImg: 'uploads/reps/missfortune.webp',
+      p1: 'Nas Ilhas da Chama Azul, que o povo nativo Buhru sempre chamou de Ilhas da Serpente, fica Bilgewater: o porto onde todo tipo de gente vem tentar a sorte. Caçadores de serpentes marinhas, gangues do cais, contrabandistas e forasteiros de todas as nações dividem as mesmas tavernas.',
+      p2: 'Não há lei, apenas o quadro de recompensas e a palavra de quem manda no cais. Fortunas nascem e afundam no mesmo dia, e todo mundo sabe que o mar sempre cobra o que é dele.',
+      attr: '+1 CEL', skill: 'Furtividade (CEL)', res: ['Perfurante'], vul: ['Psíquico'],
+      traits: [
+        ['Costume com Monstros', 'Quando você causa dano a uma criatura com um ataque ou magia e o tamanho da criatura é maior que o seu, você pode fazer com que o ataque ou magia cause dano extra à criatura. O dano extra é igual ao seu nível. Uma vez que você use esse traço, você não pode usá-lo novamente até terminar um descanso curto ou longo.'],
+        ['A Sorte Não Está a Favor dos Tolos', 'Quando você rolar um NAT20 em um attack roll, ability check ou saving throw, você deve rejogar o dado e utilizar seu novo resultado. Caso o NAT20 se repita, o resultado poderá ser utilizado.', true],
+        ['Falsificador Perito', 'Você pode duplicar a caligrafia de outras criaturas. Você tem vantagem em testes para produzir falsificações e é proficiente em Caligrafia.'],
+        ['Treinamento de Armas Sentinelas', 'Você tem proficiência com lanças, tridentes, arcos curtos, arcos longos, redes e armas ???.'],
+        ['Exímio Nadador', 'Sua velocidade na água é a mesma que em terra.']
+      ] },
+    { id: 'ixtal', name: 'Ixtal', epithet: 'A Civilização Oculta', tint: '190,214,170', at: [54.1, 68.2],
+      rep: ['Qiyana', 'a Imperatriz dos Elementos', 'A herdeira prodígio cuja ambição tirou Ixtal das sombras.'], repImg: 'uploads/reps/qiyana.webp',
+      p1: 'Por milênios, Ixtal permaneceu escondida nas selvas a leste do deserto de Shurima, usando a própria mata como escudo. Seus magos dominam a magia elemental (terra, água, fogo, ar e incontáveis variações) com uma precisão que nenhuma outra nação alcança.',
+      p2: 'Os ixtalenses assistiram de longe à ascensão e à queda de impérios, e enxergam os outros povos como jovens e imprudentes. Ixtal era isolada e desconhecida até pouco tempo, quando a filha do imperador, Qiyana, decidiu atacar sozinha um grupo de exploradores de Piltover.',
+      attr: '+1 AD', skill: 'Percepção (CLA)', res: ['Esmagamento'], vul: ['Energia'],
+      traits: [
+        ['Discurso da Fera e da Folha', 'Você tem a habilidade para se comunicar de forma limitada com animais e plantas. Eles podem entender o significado de suas palavras, embora você não tenha a habilidade especial de compreendê-los. Você tem vantagem em todos os testes de Clareza feitos para influenciá-los.'],
+        ['Mímica', 'Você pode imitar sons que você ouviu, incluindo vozes. A criatura que escutar os sons que você faz pode fazer um teste de Clareza (Intuição) resistido pela sua Clareza (Enganação) para dizer se o som é uma imitação.'],
+        ['Treinamento Ditador', 'Ordenados pela filha do imperador, Ixtalenses são proficientes em Ohmlatl e também em espadas pequenas e adagas.'],
+        ['Aversão a Armaduras', 'A cultura Ixtalense vê o uso de armaduras como um sinal de fraqueza. Enquanto você não está usando armaduras, sua Classe de Armadura (AC) é igual a 10 + seu modificador de Celeridade (CEL) + seu bônus de proficiência (segundo a tabela de proficiência).'],
+        ['Sim, senhora Qiyana', 'Bullying é algo comum na sua sociedade por conta da filha do Imperador. Você tem desvantagem em rolagens do status amedrontado.', true]
+      ] },
+    { id: 'shurima', name: 'Shurima', epithet: 'O Império das Areias', tint: '232,202,146', at: [41.1, 71.3],
+      rep: ['Taliyah', 'a Tecelã de Pedras', 'Jovem nômade que aprendeu a tecer a própria rocha do deserto para proteger o seu povo.'], repImg: 'uploads/reps/taliyah.webp', repDead: true,
+      p1: 'Shurima já foi o maior império que Runeterra conheceu, estendendo-se por todo o continente sul sob o brilho do Disco Solar. Depois da queda, a capital afundou na areia e virou lenda, e seus descendentes se espalharam pelo deserto em tribos nômades.',
+      p2: 'Agora, sussurros correm pelas dunas: a cidade se ergueu outra vez, e o antigo Imperador voltou. Para alguns, é a promessa de uma glória restaurada. Para outros, um sinal de que as areias guardam muito mais do que tesouros.',
+      attr: '+1 CLA', skill: 'História ou Natureza (AP)', res: ['Fogo'], vul: ['Ácido'],
+      traits: [
+        ['Tenacidade Shurimane', 'Seu máximo de pontos de vida aumenta em 1, e cada vez que o Shurimane sobe um nível, ele recebe 1 ponto de vida adicional.'],
+        ['Bravura', 'Você possui vantagem em testes de resistência contra a condição amedrontado.'],
+        ['Ataques Selvagens', 'Quando você atinge um ataque crítico com uma arma corpo a corpo, você pode rolar 1d4 e adicioná-lo ao dano extra causado pelo acerto crítico.'],
+        ['Treinamento Milenar', 'Você tem proficiência com khopesh, lança e azagaia.'],
+        ['Filho do Sol', 'Seu povo vive sob o sol do deserto há gerações, e seu corpo depende dele. Se você passar mais de 24 horas sem receber luz solar direta (em subterrâneos, cavernas, longas tempestades ou noites sem fim), você fica inquieto e enfraquecido: tem desvantagem em testes de resistência de Tenacidade (TEN) até passar ao menos 1 hora sob o sol.', true]
+      ] },
+    { id: 'targon', name: 'Targon', epithet: 'A Montanha que Toca as Estrelas', tint: '200,214,240', at: [31.1, 74],
+      rep: ['Leona', 'a Alvorada Radiante', 'Escudo dos Solari, portadora do poder do sol.'], repImg: 'uploads/reps/leona.webp',
+      p1: 'O Monte Targon é o pico mais alto de Runeterra e o mais cercado de lendas. Dizem que em seu cume o mundo mortal encontra os céus, e que poucos dos que tentam a escalada voltam iguais, se é que voltam.',
+      p2: 'Aos seus pés vivem os Rakkor, um povo de guerreiros. Entre eles, os Solari veneram o sol e dominam a montanha, enquanto os Lunari, devotos da lua, sobrevivem escondidos nas sombras, perseguidos como hereges.',
+      attr: '+1 AP', skill: 'Religião (AP)', res: ['Radiante'], vul: ['Necrótico'],
+      traits: [
+        ['Treinamento Targonense com Armas', 'Você possui proficiência com espadas longas, espadas curtas, arcos longos e arcos curtos.'],
+        ['Sensibilidade à Luz Solar ou Lunar', 'Você possui desvantagem nas jogadas de ataque e testes de Clareza (Percepção) relacionados à visão quando você, o alvo do seu ataque, ou qualquer coisa que você está tentando perceber, esteja sob luz solar ou lunar direta.', true],
+        ['Nascido nas Montanhas', 'Você está aclimatado a altas altitudes, incluindo elevações acima de 6.000 metros. Você também é naturalmente adaptado a climas frios.'],
+        ['Abençoado pelos Céus', 'Quando você obtiver um NAT1 em uma jogada de ataque, teste de habilidade ou teste de resistência, você pode jogar de novo o dado e deve utilizar o novo resultado. Você só pode utilizar novamente após um longo descanso.'],
+        ['Socorro Targonense · Truque', 'Devido às origens de seus antepassados, você conhece o truque (ou cantrip) Palavra do Esplendor (Word of Radiance). É necessário um símbolo sagrado Solari ou Lunari em sua posse para ser usado. Clareza é seu atributo utilizado.']
+      ] },
+    { id: 'vastaya', name: 'Vastaya', epithet: 'O Povo Quimérico', tint: '214,196,236', at: [68.6, 33.1],
+      rep: ['Ahri', 'a Raposa de Nove Caudas', 'Uma vastaya em busca das próprias origens, dividida entre o mundo dos espíritos e o dos humanos.'], repImg: 'uploads/reps/ahri.webp', note: 'por toda Runeterra',
+      p1: 'Os vastaya são um povo antigo e mágico que mistura traços humanos e animais (penas, caudas, garras, escamas) em incontáveis formas. Descendem de seres que absorveram o poder do reino espiritual, e por isso carregam uma ligação profunda com a magia natural do mundo.',
+      p2: 'Vivem muito mais que os humanos e estão espalhados por toda Runeterra, moldados pelas terras onde suas tribos se fixaram. Nenhum é igual ao outro, mas todos compartilham a mesma natureza: meio fera, meio espírito, sempre um pouco à parte do mundo dos mortais.',
+      attr: '+1 CEL', skill: 'Intuição (CLA)', res: ['Veneno', 'Ácido'], vul: ['Elétrico', 'Gelo'],
+      traits: [
+        ['Sentidos Animais', 'Seu olfato e audição são excepcionalmente bons, dando vantagem em Percepção. Você também é considerado semiconsciente enquanto dorme.'],
+        ['Plumadagas', 'Você pode usar uma ação bônus para criar 2 penas afiadas e usá-las como adagas. Elas causam dano cortante. Você pode fazer isso até três vezes a cada descanso longo.'],
+        ['Magia da Floresta', 'Você conhece um truque da lista de truques do Acólito. AP é o modificador usado para conjurar essa magia.'],
+        ['Desbravador de Florestas', 'Você não é afetado por terrenos difíceis enquanto em um terreno florestal.'],
+        ['Pluviofobia', 'Apesar de gostar de água, você não suporta chuvas, desde garoas até tempestades. Quando embaixo de chuva em um local aberto, você tem desvantagem em attack rolls e saving throws.', true]
+      ] },
+    { id: 'bandopolis', name: 'Bandópolis', epithet: 'O Reino dos Yordles', tint: '236,204,176', at: [12, 75],
+      rep: ['Teemo', 'o Explorador Veloz', 'O mais destemido (e o mais travesso) dos batedores yordles.'], repImg: 'uploads/reps/teemo.webp', note: 'no reino espiritual', spirit: true,
+      p1: 'Ninguém sabe ao certo onde fica Bandópolis. É um recanto encantado escondido dentro do reino espiritual, sem reflexo no mundo material, repleto de bugigangas e lembranças recolhidas de todos os cantos de Runeterra.',
+      p2: 'Seus habitantes, os yordles, atravessam portais secretos para visitar o mundo dos "altos": às vezes por curiosidade, às vezes por travessura, às vezes porque simplesmente se perderam. Quem já cruzou um desses portais jura que o mundo nunca mais pareceu o mesmo.',
+      attr: '+1 AP', skill: 'Investigação (AP)', res: ['Veneno', 'Necrótico'], vul: ['Cortante', 'Gelo'],
+      traits: [
+        ['Sensos Aguçados', 'Pelo fato de terem sentidos aguçados, tanto visão quanto audição, Yordles têm proficiência na perícia Percepção.'],
+        ['Visão no Escuro', 'Pelos olhos especiais que têm, Yordles têm uma visão superior no escuro e na penumbra. Você enxerga na penumbra a até 18m como se fosse luz plena, e no escuro como se fosse na penumbra. Você não pode discernir cores no escuro, apenas tons de cinza.'],
+        ['Necessidade de Cobertura', 'Por algum motivo, todo yordle sente necessidade de ter algo em sua cabeça: óculos, chapéu, touca, etc. Caso não use, o Yordle fica duplamente Exausto.', true],
+        ['Magia Inata · Truque', 'Yordles conhecem naturalmente o truque Amizade. Eles não requerem componentes materiais para esse truque.'],
+        ['Resiliência Yordle', 'Você possui vantagem em testes de resistência contra venenos.']
+      ] }
+  ];
+
+  regions() {
+    if (this._regions) return this._regions;
+    this._regions = this.data.map((d, i) => {
+      const stats = [
+        { cls: 'rg-stat up', g: '↑', k: 'Atributo', v: d.attr },
+        { cls: 'rg-stat up', g: '↑', k: 'Proficiência', v: d.skill },
+        { cls: 'rg-stat up', g: '↑', k: d.res.length > 1 ? 'Resistências' : 'Resistência', v: d.res.map((x) => 'Dano ' + this.de(x)).join(' · ') },
+        { cls: 'rg-stat down', g: '↓', k: d.vul.length > 1 ? 'Vulnerabilidades' : 'Vulnerabilidade', v: d.vul.map((x) => 'Dano ' + this.de(x)).join(' · ') },
+      ];
+      return {
+        id: d.id, hid: 'rg-' + d.id, name: d.name, epithet: d.epithet, href: '#' + d.id,
+        num: String(i + 1).padStart(2, '0'), vars: { '--tint': 'rgb(' + d.tint + ')' },
+        p1: d.p1, p2: d.p2, coda: d.coda || '',
+        stats,
+        traits: d.traits.map((t) => ({ cls: t[2] ? 'rg-trait burden rp-r' : 'rg-trait rp-r', tag: t[2] ? 'Fardo' : 'Traço', name: t[0], text: t[1] })),
+        attr: d.attr, skill: d.skill, res: d.res.join(', '), vul: d.vul.join(', '),
+        rep: d.rep[0], repTitle: d.rep[1], repWhy: d.rep[2], repInitial: d.rep[0].charAt(0), repImg: d.repImg || '', repDead: !!d.repDead,
+        art: 'uploads/regions/' + d.id + '.webp', artAlt: 'Ilustração de ' + d.name, openArt: () => this.setState({ art: { src: 'uploads/regions/' + d.id + '.webp', name: d.name, epithet: d.epithet } }),
+      };
+    });
+    return this._regions;
+  }
+
+  // "Cortante" → "Cortante", "Veneno" → "de Veneno" (as the campaign's sheets read)
+  de(x) { return /^(Cortante|Perfurante|Elétrico|Ácido|Necrótico|Psíquico|Radiante)$/.test(x) ? x : 'de ' + x; }
+
+  setRoot = (el) => {
+    (this.cleanup || []).forEach((f) => f()); this.cleanup = [];
+    if (!el) return;
+    if (window.RegionFX) el.querySelectorAll('[data-fx]').forEach((c) => this.cleanup.push(window.RegionFX.mount(c, c.getAttribute('data-fx'))));
+    if (!window.IntersectionObserver) return;
+    el.classList.add('js-reveal');
+    const rev = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); rev.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
+    el.querySelectorAll('.rp-r').forEach((n) => rev.observe(n));
+    const act = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) this.setState({ active: e.target.getAttribute('data-region') }); }), { rootMargin: '-45% 0px -50% 0px' });
+    el.querySelectorAll('[data-region]').forEach((n) => act.observe(n));
+    const hero = el.querySelector('.rp-hero');
+    const heroIO = new IntersectionObserver((es) => { if (es[0].isIntersecting) this.setState({ active: null }); }, { threshold: 0.35 });
+    if (hero) heroIO.observe(hero);
+    this.cleanup.push(() => { rev.disconnect(); act.disconnect(); heroIO.disconnect(); });
+  };
+
+  // the map leans toward the pointer, like a chart on a table
+  tiltMap = (e) => {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = e.currentTarget.querySelector('.rp-map-in'), r = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+    el.style.transform = 'rotateX(' + (-y * 4).toFixed(2) + 'deg) rotateY(' + (x * 5).toFixed(2) + 'deg) scale(1.01)';
+  };
+  resetMap = (e) => { const el = e.currentTarget.querySelector('.rp-map-in'); if (el) el.style.transform = ''; };
+
+  closeArt = () => { this.setState({ art: null }); window.removeEventListener('keydown', this.onArtKey); };
+  onArtKey = (e) => { if (e.key === 'Escape') this.closeArt(); };
+  focusEl = (el) => { if (el) { window.addEventListener('keydown', this.onArtKey); setTimeout(() => el.focus(), 30); } };
+
+  componentWillUnmount() { (this.cleanup || []).forEach((f) => f()); window.removeEventListener('keydown', this.onArtKey); }
+
+  renderVals() {
+    const regs = this.regions();
+    const a = this.state.active;
+    return {
+      setRoot: this.setRoot,
+      regions: regs,
+      atlas: this.data.map((d, i) => ({ name: d.name, note: d.note || '', epithet: d.epithet, rep: 'Representante: ' + d.rep[0] + (d.repDead ? ' †' : ''), href: '#' + d.id, cls: 'rp-pt' + (d.spirit ? ' spirit' : '') + (d.at[0] > 70 ? ' tl' : ''), pos: { left: d.at[0] + '%', top: d.at[1] + '%', '--d': (i * 0.31).toFixed(2) + 's', '--tint': 'rgb(' + d.tint + ')' } })),
+      tiltMap: this.tiltMap,
+      artOpen: !!this.state.art,
+      artSrc: this.state.art ? this.state.art.src : '',
+      artName: this.state.art ? this.state.art.name : '',
+      artEpithet: this.state.art ? this.state.art.epithet : '',
+      artTitle: this.state.art ? 'Ilustração de ' + this.state.art.name : '',
+      closeArt: this.closeArt,
+      focusEl: this.focusEl,
+      resetMap: this.resetMap,
+      index: regs.map((r) => ({ name: r.name, href: r.href, cls: r.id === a ? 'is-active' : '' })),
+      indexCls: a ? 'rp-index is-on' : 'rp-index',
+    };
+  }
+}
+</script>
+</body>
+</html>
