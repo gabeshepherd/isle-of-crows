@@ -7,10 +7,10 @@
    and a mirror image of it shivers beside it: an ascension, and an illusion.
    mount(canvas) → stop(). Reduced motion: the painting with its light, still. */
 (function () {
-  var TAU = Math.PI * 2, SRC = 'uploads/ioc/shurima-ascension-dark.webp';
+  var TAU = Math.PI * 2, SRC = 'uploads/ioc/shurima-ascension-dark.webp?v=2';
   var IW = 1905, IH = 825;                                   // painting size
-  var DISC = { x: 0.4965, y: 0.2, r: 0.1 };
-  var CORE = { x: 0.4985, y: 0.198 };                         // the figure at the heart of the disc                // r as a share of the painting's width
+  var DISC = { x: 0.4953, y: 0.2, r: 0.1 };
+  var CORE = { x: 0.4955, y: 0.198 };                         // the figure at the heart of the disc                // r as a share of the painting's width
   var FALL = { x: 0.4875, y: 0.68, y1: 0.9 };
   var BEAM = { y0: 0.36, y1: 0.54 };
   function rng(seed) { var s = seed >>> 0; return function () { s = (s + 0x6D2B79F5) >>> 0; var t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
@@ -126,7 +126,7 @@
       for (var di = 0; di < DUST.length; di++) {
         var D = DUST[di];
         if (di % 3 === 0) {                                     // embers climbing the beam of light
-          var eu = (D.x + t * D.v * 1.6) % 1, ex2 = 0.4985 + Math.sin(t * 0.9 + D.p) * 0.012 * (1 + eu * 2), ey2 = BEAM.y1 + 0.06 - eu * (BEAM.y1 - BEAM.y0 + 0.12);
+          var eu = (D.x + t * D.v * 1.6) % 1, ex2 = CORE.x + Math.sin(t * 0.9 + D.p) * 0.012 * (1 + eu * 2), ey2 = BEAM.y1 + 0.06 - eu * (BEAM.y1 - BEAM.y0 + 0.12);
           var ep = P(ex2, ey2);
           c.fillStyle = 'rgba(255,' + (150 + Math.round(60 * D.a)) + ',70,' + (D.a + 0.3) * Math.sin(eu * Math.PI) + ')';
           c.fillRect(ep[0], ep[1], D.s * S + 0.6, D.s * S + 0.6);
